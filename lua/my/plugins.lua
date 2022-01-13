@@ -4,18 +4,20 @@ local get_rfile = vim.api.nvim_get_runtime_file
 local packer_path = fn.stdpath'data'..'/site/pack/packer/opt/packer.nvim'
 local packer_url = 'https://github.com/wbthomason/packer.nvim'
 
-if fn.empty(fn.glob(packer_path)) > 0 then
-    BOOTSTRAP = fn.system {'git', 'clone', packer_url, packer_path}
+BOOTSTRAP = fn.empty(fn.glob(packer_path)) > 0 
+if BOOTSTRAP then
+    fn.system {'git', 'clone', packer_url, packer_path}
     print'Installing packer, when complete restart neovim..'
     vim.cmd'packadd packer.nvim'
 end
 
--- Use a protected call so we don't error out on first use
 local ok, packer = pcall(require, 'packer')
-if not ok then
+if not ok and not BOOTSTRAP then
+    -- maybe data dir already populated, and just need to add packer
     vim.cmd'packadd packer.nvim'
-end
-local ok, packer = pcall(require, 'packer')
+    ok, packer = pcall(require, 'packer')
+end 
+
 if not ok then
     print'was not able to require packer'
 end
@@ -55,6 +57,7 @@ return ok and packer.startup(function(use)
     }
 
     BOOTSTRAP = BOOTSTRAP and require'packer'.sync()
+    BOOTSTRAP = BOOTSTRAP and require'nvim-treesitter.install'.install {ask_reinstall=true} "all"
 end)
 
 -- ToDo
@@ -69,7 +72,6 @@ end)
 -- https://github.com/jubnzv/virtual-types.nvim/
 -- https://github.com/folke/which-key.nvim
 -- https://github.com/onsails/lspkind-nvim
--- https://github.com/nvim-treesitter/nvim-treesitter
 -- https://github.com/L3MON4D3/LuaSnip
 -- https://github.com/akinsho/bufferline.nvim
 -- https://github.com/romgrk/barbar.nvim
@@ -78,6 +80,7 @@ end)
 -- https://github.com/numToStr/Comment.nvim
 -- https://github.com/ThePrimeagen/vim-be-good
 -- https://github.com/nvim-neorg/neorg
+-- https://github.com/svermeulen/vimpeccable
 --
 -- Langs:
 -- https://github.com/ShinKage/idris2-nvim

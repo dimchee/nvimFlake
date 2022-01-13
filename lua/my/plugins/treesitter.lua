@@ -1,4 +1,4 @@
-local M = { 'nvim-treesitter/nvim-treesitter' }
+local M = { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
 function M.config()
     require'nvim-treesitter.configs'.setup {
