@@ -16,7 +16,7 @@ local opts = { silent=true, noremap=true }
 --   command_mode = "c",
 
 
-keymap("n", "<leader>R", "<cmd>luafile ~/Nix/Vim/init.lua<cr>", opts)
+keymap("n", "<leader>R", "<cmd>luafile $VIM_HOME/init.lua<cr>", opts)
 keymap("n", "<space><space>", "<cmd>nohls<cr>", opts)
 
 -- Move text up and down

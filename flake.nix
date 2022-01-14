@@ -1,3 +1,5 @@
+# dont forget to run in ~/Nix/Sys
+# nix flake lock --update-input neovim
 {
     description = "My neovim configuration";
     nixConfig.bash-prompt = "\[nvim-env\]$ ";
@@ -47,7 +49,8 @@
 
             buildInputs = [ pkgs.makeWrapper ];
             postBuild = ''
-                wrapProgram $out/bin/nvim --set XDG_CONFIG_HOME $out/etc
+                wrapProgram $out/bin/nvim --set VIM_HOME ${thisRepoPath} \
+                    --set XDG_CONFIG_HOME $out/etc
                 ln -s $out/bin/nvim $out/bin/vim
                 mkdir -p $out/etc/nvim
                 ln -s ${thisRepoPath}/.cache   $out/etc/nvim/plugin
