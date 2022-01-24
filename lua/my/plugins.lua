@@ -55,6 +55,7 @@ return ok and packer.startup(function(use)
             vim.cmd'filetype plugin indent on'
         end
     }
+    use {'RRethy/nvim-align'}
 
     BOOTSTRAP = BOOTSTRAP and require'packer'.sync()
     BOOTSTRAP = BOOTSTRAP and require'nvim-treesitter.install'.install {ask_reinstall=true} "all"
@@ -81,6 +82,8 @@ end)
 -- https://github.com/ThePrimeagen/vim-be-good
 -- https://github.com/nvim-neorg/neorg
 -- https://github.com/svermeulen/vimpeccable
+-- https://github.com/CRAG666/code_runner.nvim
+-- https://github.com/michaelb/sniprun
 --
 -- Langs:
 -- https://github.com/ShinKage/idris2-nvim

@@ -1,7 +1,11 @@
+-- Not working cause of new nvim (i think)
 local M = {
     'oberblastmeister/neuron.nvim',
-    requires = {'nvim-telescope/telescope.nvim'},
-    branch='unstable',
+    requires = {
+        'nvim-telescope/telescope.nvim',
+        'nvim-lua/plenary.nvim',
+    },
+    -- branch='unstable',
     keys = { "gzi", "gzz", "gzZ", "gzn", "gzb", "gzB", "gzt", "gz[", "gz]", "gzg" },
 }
 

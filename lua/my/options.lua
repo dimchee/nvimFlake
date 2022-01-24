@@ -1,11 +1,14 @@
 --Incremental live completion
 vim.o.inccommand = 'nosplit'
+-- Tabs
+vim.opt.autoindent = true
+vim.opt.cindent = true
+vim.opt.wrap = true
 
--- Set tab options for vim
-vim.opt.expandtab = true                        -- convert tabs to spaces
-vim.opt.shiftwidth = 4                          -- the number of spaces inserted for each indentation
-vim.opt.tabstop = 4                             -- insert 2 spaces for a tab
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
+vim.opt.expandtab = true
 
 -- Allow filetype plugins and syntax highlighting
 vim.opt.autoindent = true

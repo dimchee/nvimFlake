@@ -56,6 +56,7 @@
                 ln -s ${thisRepoPath}/.cache   $out/etc/nvim/plugin
                 ln -s ${thisRepoPath}/.cache   $out/etc/nvim/parser
                 ln -s ${thisRepoPath}/lua      $out/etc/nvim/lua
+                ln -s ${thisRepoPath}/after      $out/etc/nvim/after
                 ln -s ${thisRepoPath}/init.lua $out/etc/nvim/init.lua
                 '';
         };
