@@ -6,9 +6,7 @@ local M = {
 
 M.config = function()
     require'neogit'.setup()
-    vim.api.nvim_set_keymap(
-        'n', '<leader>gg', '<cmd>lua require"neogit".open()<cr>', {silent=true}
-    )
+    vim.keymap.set('n', '<leader>gg', require'neogit'.open, {silent=true})
 end
 
 return M

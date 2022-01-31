@@ -1,8 +1,14 @@
+P = function(v)
+  print(vim.inspect(v))
+  return v
+end
 require'my.options'
 require'my.mappings'
 require'my.deprecated'
 
 vim.tbl_foreach = table.foreach 
+
+vim.fn.setenv('XDG_CONFIG_HOME', '~/.config') -- fix nix flakes hack
 
 vim.cmd[[command! PackerLoad lua require'my.plugins']]
 vim.cmd[[
@@ -22,8 +28,9 @@ function Markdownify()
     vim.api.nvim_win_set_cursor(0, {row, col + 2})
     vim.cmd'startinsert'
 end
-vim.api.nvim_set_keymap("n", "mp", "<cmd>lua Markdownify()<cr>", { silent=true })
+vim.keymap.set('n', 'mp', Markdownify)
+
+-- see :help vim.keymap and use it
 
 -- https://github.com/luafun/luafun
 -- https://github.com/lua-stdlib/functional
-

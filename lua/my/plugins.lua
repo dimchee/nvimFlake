@@ -4,7 +4,7 @@ local get_rfile = vim.api.nvim_get_runtime_file
 local packer_path = fn.stdpath'data'..'/site/pack/packer/opt/packer.nvim'
 local packer_url = 'https://github.com/wbthomason/packer.nvim'
 
-BOOTSTRAP = fn.empty(fn.glob(packer_path)) > 0 
+BOOTSTRAP = fn.empty(fn.glob(packer_path)) > 0
 if BOOTSTRAP then
     fn.system {'git', 'clone', packer_url, packer_path}
     print'Installing packer, when complete restart neovim..'
@@ -16,7 +16,7 @@ if not ok and not BOOTSTRAP then
     -- maybe data dir already populated, and just need to add packer
     vim.cmd'packadd packer.nvim'
     ok, packer = pcall(require, 'packer')
-end 
+end
 
 if not ok then
     print'was not able to require packer'
@@ -27,8 +27,23 @@ return ok and packer.startup(function(use)
     for _, mod in ipairs(get_rfile('lua/my/plugins/*.lua', true)) do
         local ok, m = pcall(loadfile(mod))
         if type(m) == 'table' and ok then use(m)
-        else print('Can\'t load module'..mod) end
+        elseif type(m) == 'string' then print('Can\'t load file '..mod..' error: '..m)
+        else print'WTF' end
     end
+    use {'L3MON4D3/LuaSnip',
+        config = function()
+            vim.keymap.set({ "i", "s" }, "<c-k>", function()
+                if ls.expand_or_jumpable() then
+                    ls.expand_or_jump()
+                end
+            end, { silent = true })
+            vim.keymap.set({ "i", "s" }, "<c-j>", function()
+                if ls.jumpable(-1) then
+                    ls.jump(-1)
+                end
+            end, { silent = true })
+        end
+    }
     use {
         'shaunsingh/nord.nvim',
         setup = function()
@@ -56,6 +71,12 @@ return ok and packer.startup(function(use)
         end
     }
     use {'RRethy/nvim-align'}
+    use {
+        'numToStr/Comment.nvim',
+        config = function()
+            require'Comment'.setup()
+        end
+    }
 
     BOOTSTRAP = BOOTSTRAP and require'packer'.sync()
     BOOTSTRAP = BOOTSTRAP and require'nvim-treesitter.install'.install {ask_reinstall=true} "all"
@@ -84,6 +105,9 @@ end)
 -- https://github.com/svermeulen/vimpeccable
 -- https://github.com/CRAG666/code_runner.nvim
 -- https://github.com/michaelb/sniprun
+-- https://github.com/simrat39/rust-tools.nvim
+-- https://github.com/hood/popui.nvim or https://github.com/nvim-telescope/telescope-ui-select.nvim
+-- for sql https://github.com/tpope/vim-dadbod
 --
 -- Langs:
 -- https://github.com/ShinKage/idris2-nvim

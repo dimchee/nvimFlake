@@ -12,11 +12,11 @@ function M.config()
         },
         flutter_path = flutter_sdk.."/bin/flutter",
         lsp = {
-            on_attach = require'lsp'.on_attach
+            on_attach = require'my.plugins.lsp'.on_attach
         }
     }
-    vim.api.nvim_buf_set_keymap(
-        0, "n", "<leader>ot", "<cmd>flutteroutlinetoggle<cr>", { silent=true, unique=true }
+    vim.keymap.set(
+        'n', '<leader>ot', '<cmd>flutteroutlinetoggle<cr>', { silent=true, unique=true, buffer=0 }
     )
     require'telescope'.load_extension'flutter'
 end

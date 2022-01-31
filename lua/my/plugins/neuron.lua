@@ -18,9 +18,9 @@ function M.config()
         neuron_dir = '~/Library/Neuron',
         leader = 'gz', -- leader key, remember 'go zettel'
     }
-    local keymap = vim.api.nvim_set_keymap
-    local tele_do = require'my.plugins.telescope'.tele_do
-    keymap('n', 'gzg', tele_do'live_grep{cwd="~/Library/Neuron"}', {silent=true})
+    vim.keymap.set('n', 'gzg', function()
+        require'telescope.builtin'.live_grep{cwd="~/Library/Neuron"}
+    end, {silent=true})
 end
 
 return M

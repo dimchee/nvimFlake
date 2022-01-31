@@ -32,7 +32,7 @@ function M.make_buf_repl()
             start_in_insert = true,
             close_on_exit = true,
         })
-        vim.api.nvim_buf_set_keymap(0, "n", "<leader>r", ":lua require'my.terminal'.toggle()<cr>", { silent=true })
+        vim.keymap.set('n', '<leader>r', require'my.terminal'.toggle, { silent=true, buffer=0 })
     end
 end
 -- vim.cmd[[autocmd FileType * :lua require'my.terminal'.make_buf_repl()]]

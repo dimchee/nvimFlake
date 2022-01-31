@@ -4,7 +4,6 @@
 -- vim.g.maplocalleader = " "
 vim.g.mapleader = ','
 vim.g.maplocalleader = ','
-local keymap = vim.api.nvim_set_keymap
 local opts = { silent=true, noremap=true }
 
 -- Modes
@@ -16,14 +15,13 @@ local opts = { silent=true, noremap=true }
 --   command_mode = "c",
 
 
-keymap("n", "<leader>R", "<cmd>luafile $VIM_HOME/init.lua<cr>", opts)
-keymap("n", "<space><space>", "<cmd>nohls<cr>", opts)
+vim.keymap.set('n', '<leader>R', '<cmd>luafile $VIM_HOME/init.lua<cr>', opts)
+vim.keymap.set('n', '<space><space>', '<cmd>nohls<cr>', opts)
 
 -- Move text up and down
-keymap("v", "<A-j>", ":m .+1<CR>==", opts)
-keymap("v", "<A-k>", ":m .-2<CR>==", opts)
-keymap("x", "J", ":move '>+1<CR>gv-gv", opts)
-keymap("x", "K", ":move '<-2<CR>gv-gv", opts)
-keymap("x", "<A-j>", ":move '>+1<CR>gv-gv", opts)
-keymap("x", "<A-k>", ":move '<-2<CR>gv-gv", opts)
-
+vim.keymap.set('v', '<A-j>', ":m .+1<CR>==", opts)
+vim.keymap.set('v', '<A-k>', ":m .-2<CR>==", opts)
+vim.keymap.set('x', 'J', ":move '>+1<CR>gv-gv", opts)
+vim.keymap.set('x', 'K', ":move '<-2<CR>gv-gv", opts)
+vim.keymap.set('x', '<A-j>', ":move '>+1<CR>gv-gv", opts)
+vim.keymap.set('x', '<A-k>', ":move '<-2<CR>gv-gv", opts)
