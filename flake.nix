@@ -2,7 +2,6 @@
 # nix flake lock --update-input neovim
 {
     description = "My neovim configuration";
-    nixConfig.bash-prompt = "\[nvim-env\]$ ";
     inputs = {
         neovim-overlay.url = "github:nix-community/neovim-nightly-overlay";
         neuron.url = "github:srid/neuron";
@@ -10,6 +9,7 @@
     outputs = { self, nixpkgs, neovim-overlay, neuron }: 
     let
         thisRepoPath = "/home/dimchee/Nix/Vim";
+        runtimePath = "${thisRepoPath},~/.config/nvim,$VIMRUNTIME,${thisRepoPath}/after";
         pkgs = import nixpkgs {
             overlays = [
                 neovim-overlay.overlay
@@ -49,10 +49,11 @@
 
             buildInputs = [ pkgs.makeWrapper ];
             postBuild = ''
-                wrapProgram $out/bin/nvim \
-		--set VIMINIT 'set runtimepath=${thisRepoPath},~/.config/nvim,$VIMRUNTIME | ru init.lua'
-		ln -s $out/bin/nvim $out/bin/vim
-                '';
+            wrapProgram $out/bin/nvim \
+                --set VIM_HOME ${thisRepoPath} \
+		            --set VIMINIT 'set runtimepath=${runtimePath} | ru init.lua'
+		        ln -s $out/bin/nvim $out/bin/vim
+            '';
         };
         devShell.x86_64-linux = pkgs.mkShell { buildInputs = [ self.packages.x86_64-linux.nvim ]; };
     };
