@@ -49,15 +49,10 @@
 
             buildInputs = [ pkgs.makeWrapper ];
             postBuild = ''
-                wrapProgram $out/bin/nvim --set VIM_HOME ${thisRepoPath} \
-                    --set XDG_CONFIG_HOME $out/etc
-                ln -s $out/bin/nvim $out/bin/vim
+                wrapProgram $out/bin/nvim --set VIM_HOME $out/etc/nvim/init.lua
                 mkdir -p $out/etc/nvim
-                ln -s ${thisRepoPath}/.cache   $out/etc/nvim/plugin
-                ln -s ${thisRepoPath}/.cache   $out/etc/nvim/parser
-                ln -s ${thisRepoPath}/lua      $out/etc/nvim/lua
-                ln -s ${thisRepoPath}/after    $out/etc/nvim/after
-                ln -s ${thisRepoPath}/init.lua $out/etc/nvim/init.lua
+                echo "set runtimepath=${thisRepoPath},$VIMRUNTIME" > $out/etc/nvim/init.vim
+                echo "luafile ${thisRepoPath}/init.lua" >> $out/etc/nvim/init.vim
                 '';
         };
         devShell.x86_64-linux = pkgs.mkShell { buildInputs = [ self.packages.x86_64-linux.nvim ]; };

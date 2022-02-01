@@ -27,8 +27,9 @@ M.config = function()
         --     autocomplete = false,
         -- },
         mapping = {
-            ['<C-]>'] = cmp.mapping.confirm{select = true},
-            ['<CR>'] = cmp.config.disable,--cmp.mapping.confirm({ select = true }),
+            ['<CR>'] = cmp.mapping.confirm{ select = true },
+            --['<NL>']= cmp.mapping.confirm{select = true}, -- Fix for <C-CR>
+            --['<CR>'] = cmp.config.disable,
             -- not using
             --['<C-Space>'] = cmp.mapping.complete(),
             ['<C-d>'] = cmp.mapping.scroll_docs(-4),

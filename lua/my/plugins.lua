@@ -4,9 +4,8 @@ local get_rfile = vim.api.nvim_get_runtime_file
 local packer_path = fn.stdpath'data'..'/site/pack/packer/opt/packer.nvim'
 local packer_url = 'https://github.com/wbthomason/packer.nvim'
 
-BOOTSTRAP = fn.empty(fn.glob(packer_path)) > 0
-if BOOTSTRAP then
-    fn.system {'git', 'clone', packer_url, packer_path}
+if fn.empty(fn.glob(packer_path)) > 0 then
+    BOOTSTRAP = fn.system {'git', 'clone', '--depth', '1', packer_url, packer_path}
     print'Installing packer, when complete restart neovim..'
     vim.cmd'packadd packer.nvim'
 end
@@ -77,9 +76,19 @@ return ok and packer.startup(function(use)
             require'Comment'.setup()
         end
     }
+    use {
+        'saecki/crates.nvim',
+        event = { "BufRead Cargo.toml" },
+        requires = {'nvim-lua/plenary.nvim'},
+        config = function()
+            require('crates').setup()
+        end,
+    }
 
-    BOOTSTRAP = BOOTSTRAP and require'packer'.sync()
-    BOOTSTRAP = BOOTSTRAP and require'nvim-treesitter.install'.install {ask_reinstall=true} "all"
+    if BOOTSTRAP then
+        require'packer'.sync()
+        require'nvim-treesitter.install'.install({ask_reinstall=true}, 'all')
+    end
 end)
 
 -- ToDo
@@ -107,6 +116,7 @@ end)
 -- https://github.com/michaelb/sniprun
 -- https://github.com/simrat39/rust-tools.nvim
 -- https://github.com/hood/popui.nvim or https://github.com/nvim-telescope/telescope-ui-select.nvim
+-- https://github.com/psiska/telescope-hoogle.nvim for haskell
 -- for sql https://github.com/tpope/vim-dadbod
 --
 -- Langs:
