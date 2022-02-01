@@ -49,10 +49,9 @@
 
             buildInputs = [ pkgs.makeWrapper ];
             postBuild = ''
-                wrapProgram $out/bin/nvim --set VIM_HOME $out/etc/nvim/init.lua
-                mkdir -p $out/etc/nvim
-                echo "set runtimepath=${thisRepoPath},$VIMRUNTIME" > $out/etc/nvim/init.vim
-                echo "luafile ${thisRepoPath}/init.lua" >> $out/etc/nvim/init.vim
+                wrapProgram $out/bin/nvim \
+		--set VIMINIT 'set runtimepath=${thisRepoPath},~/.config/nvim,$VIMRUNTIME | ru init.lua'
+		ln -s $out/bin/nvim $out/bin/vim
                 '';
         };
         devShell.x86_64-linux = pkgs.mkShell { buildInputs = [ self.packages.x86_64-linux.nvim ]; };

@@ -8,8 +8,6 @@ require'my.deprecated'
 
 vim.tbl_foreach = table.foreach 
 
---vim.fn.setenv('XDG_CONFIG_HOME', '~/.config') -- fix nix flakes hack
-
 vim.cmd[[command! PackerLoad lua require'my.plugins']]
 vim.cmd[[
 augroup filetypedetect
