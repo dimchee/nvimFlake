@@ -9,7 +9,7 @@
     outputs = { self, nixpkgs, neovim-overlay, neuron }: 
     let
         thisRepoPath = "/home/dimchee/Nix/Vim";
-        runtimePath = "${thisRepoPath},~/.config/nvim,$VIMRUNTIME,${thisRepoPath}/after";
+        runtimePath = "${thisRepoPath},~/.config/nvim,~/.local/share/nvim/site,$VIMRUNTIME";
         pkgs = import nixpkgs {
             overlays = [
                 neovim-overlay.overlay

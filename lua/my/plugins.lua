@@ -117,6 +117,7 @@ end)
 -- https://github.com/simrat39/rust-tools.nvim
 -- https://github.com/hood/popui.nvim or https://github.com/nvim-telescope/telescope-ui-select.nvim
 -- https://github.com/psiska/telescope-hoogle.nvim for haskell
+-- https://github.com/habamax/vim-godot
 -- for sql https://github.com/tpope/vim-dadbod
 --
 -- Langs:
