@@ -22,6 +22,7 @@ M.servers = {
     gopls = true,
     texlab = true,
     purescriptls = true,
+    tsserver = true,
     rnix = true,
     bashls = true,
     elmls = true,

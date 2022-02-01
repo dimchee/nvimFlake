@@ -119,6 +119,7 @@ end)
 -- https://github.com/psiska/telescope-hoogle.nvim for haskell
 -- https://github.com/habamax/vim-godot
 -- for sql https://github.com/tpope/vim-dadbod
+-- https://github.com/nathom/filetype.nvim to get faster
 --
 -- Langs:
 -- https://github.com/ShinKage/idris2-nvim

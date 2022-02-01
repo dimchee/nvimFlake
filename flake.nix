@@ -34,6 +34,8 @@
 
                 haskellPackages.haskell-language-server
                 nodePackages.pyright
+                # nodePackages.typescript-language-server
+                # nodePackages.typescript
                 #nodePackages.purescript-language-server
                 #elmPackages.elm-language-server
                 rust-analyzer
