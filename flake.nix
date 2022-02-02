@@ -9,7 +9,7 @@
     outputs = { self, nixpkgs, neovim-overlay, neuron }: 
     let
         thisRepoPath = "/home/dimchee/Nix/Vim";
-        runtimePath = "${thisRepoPath},~/.config/nvim,~/.local/share/nvim/site,$VIMRUNTIME";
+        runtimePath = "${thisRepoPath},~/.config/nvim,~/.local/share/nvim/site,$VIMRUNTIME,${thisRepoPath}/after";
         pkgs = import nixpkgs {
             overlays = [
                 neovim-overlay.overlay
@@ -34,6 +34,7 @@
 
                 haskellPackages.haskell-language-server
                 nodePackages.pyright
+                # go get -u github.com/arduino/arduino-language-server
                 # nodePackages.typescript-language-server
                 # nodePackages.typescript
                 #nodePackages.purescript-language-server
