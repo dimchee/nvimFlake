@@ -6,7 +6,8 @@ local M = {
         'nvim-lua/plenary.nvim',
     },
     -- branch='unstable',
-    keys = { "gzi", "gzz", "gzZ", "gzn", "gzb", "gzB", "gzt", "gz[", "gz]", "gzg" },
+    --keys = { "gzi", "gzz", "gzZ", "gzn", "gzb", "gzB", "gzt", "gz[", "gz]", "gzg" },
+    opt=true
 }
 
 

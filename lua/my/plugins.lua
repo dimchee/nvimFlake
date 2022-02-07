@@ -69,6 +69,12 @@ return ok and packer.startup(function(use)
             vim.cmd'filetype plugin indent on'
         end
     }
+    use {'ShinKage/idris2-nvim', ft='idris2',
+        requires = {'neovim/nvim-lspconfig', 'MunifTanjim/nui.nvim'},
+        config = function()
+            require'idris2'.setup{}
+        end
+    }
     use {'RRethy/nvim-align'}
     use {
         'numToStr/Comment.nvim',
@@ -78,11 +84,17 @@ return ok and packer.startup(function(use)
     }
     use {
         'saecki/crates.nvim',
-        event = { "BufRead Cargo.toml" },
+        event = {'BufRead Cargo.toml'},
         requires = {'nvim-lua/plenary.nvim'},
         config = function()
-            require('crates').setup()
+            require'crates'.setup()
         end,
+    }
+    use {
+        '~/Code/Nvim/notes',
+        config = function()
+            require'notes'.setup{notes_dir = '~/Library/Neuron'}
+        end
     }
 
     if BOOTSTRAP then
@@ -120,6 +132,8 @@ end)
 -- https://github.com/habamax/vim-godot
 -- for sql https://github.com/tpope/vim-dadbod
 -- https://github.com/nathom/filetype.nvim to get faster
+-- https://github.com/xiyaowong/telescope-emoji.nvim
+-- https://github.com/dhruvmanila/telescope-bookmarks.nvim
 --
 -- Langs:
 -- https://github.com/ShinKage/idris2-nvim
