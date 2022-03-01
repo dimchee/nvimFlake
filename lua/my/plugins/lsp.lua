@@ -72,7 +72,7 @@ M.config = function()
         conf = vim.tbl_deep_extend("force", {
             --on_init = custom_init,
             on_attach = lsp.on_attach,
-            capabilities = lsp.capabilities,
+            -- capabilities = lsp.capabilities, does not exist
         }, conf)
         lspconf[s].setup(conf)
     end
@@ -135,7 +135,7 @@ M.on_attach = function(client, buf)
     vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
     vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
     --vim.keymap.set('n', '<leader>so', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts)
-    if vim.lsp.codelens and client.resolved_capabilities.code_lens then
+    if nil and vim.lsp.codelens and client.resolved_capabilities.code_lens then
         vim.keymap.set('n', '<leader>cr', vim.lsp.codelens.run, opts)
         vim.cmd [[
             augroup lsp_document_codelens

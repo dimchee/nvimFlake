@@ -6,6 +6,7 @@ local M = {
 }
 M.requires = {
     {'neovim/nvim-lspconfig'},
+    {'PaterJason/cmp-conjure'},
     {'onsails/lspkind-nvim', module='lspkind'},
     -- extensions
     {'hrsh7th/cmp-nvim-lsp', module='cmp_nvim_lsp'},
@@ -39,6 +40,7 @@ M.config = function()
         sources = cmp.config.sources({
             { name = 'nvim_lua' },
             { name = 'nvim_lsp' },
+            { name = 'conjure' },
             { name = 'luasnip' },
             --{ name = 'path' },
             --{ name = 'buffer' },

@@ -54,6 +54,7 @@ return ok and packer.startup(function(use)
         'folke/which-key.nvim',
         config = 'require"which-key".setup {}'
     }
+    use {'nathom/filetype.nvim'} -- faster startup + filetypes
     use {
         'hoob3rt/lualine.nvim',
         requires = {'kyazdani42/nvim-web-devicons'},
@@ -62,6 +63,7 @@ return ok and packer.startup(function(use)
     use {'rafcamlet/nvim-luapad',
         config = function() require('luapad').setup{} end
     }
+    use {'Olical/conjure'} 
     use {'purescript-contrib/purescript-vim', ft='purescript',
         config = function()
             vim.cmd'syntax on'
@@ -69,7 +71,12 @@ return ok and packer.startup(function(use)
             vim.cmd'filetype plugin indent on'
         end
     }
+    use {'adimit/prolog.vim', ft='prolog', setup = function()
+        vim.cmd [[autocmd BufNewFile,BufRead *.pl set filetype=prolog]]
+    end}
     use {'ShinKage/idris2-nvim', ft='idris2',
+    -- install lsp first:
+    -- https://github.com/idris-community/idris2-lsp/issues/68
         requires = {'neovim/nvim-lspconfig', 'MunifTanjim/nui.nvim'},
         config = function()
             require'idris2'.setup{}
@@ -129,14 +136,16 @@ end)
 -- https://github.com/simrat39/rust-tools.nvim
 -- https://github.com/hood/popui.nvim or https://github.com/nvim-telescope/telescope-ui-select.nvim
 -- https://github.com/psiska/telescope-hoogle.nvim for haskell
+-- https://github.com/tamago324/telescope-openbrowser.nvim
 -- https://github.com/habamax/vim-godot
 -- for sql https://github.com/tpope/vim-dadbod
 -- https://github.com/nathom/filetype.nvim to get faster
 -- https://github.com/xiyaowong/telescope-emoji.nvim
 -- https://github.com/dhruvmanila/telescope-bookmarks.nvim
+-- https://github.com/tamago324/telescope-openbrowser.nvim
+-- https://github.com/Pocco81/HighStr.nvim
 --
 -- Langs:
--- https://github.com/ShinKage/idris2-nvim
 -- use {'JuliaEditorSupport/julia-vim'}
 -- -- if using ft='julia' E117: Unknown function: LaTeXtoUnicode#Refresh
 -- use {'ziglang/zig.vim', ft='zig'}
