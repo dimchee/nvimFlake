@@ -41,6 +41,7 @@ return ok and packer.startup(function(use)
                     ls.jump(-1)
                 end
             end, { silent = true })
+            require'my.snippets'
         end
     }
     use {
@@ -61,19 +62,20 @@ return ok and packer.startup(function(use)
         config = function() require'lualine'.setup {options = {theme = 'nord'}} end
     }
     use {'rafcamlet/nvim-luapad',
-        config = function() require('luapad').setup{} end
+        config = function() require'luapad'.setup{} end
     }
     use {'Olical/conjure'} 
     use {'purescript-contrib/purescript-vim', ft='purescript',
+        setup = function() vim.cmd'au BufNewFile,BufRead *.purs set filetype=purescript' end, 
         config = function()
             vim.cmd'syntax on'
             vim.cmd'filetype on'
             vim.cmd'filetype plugin indent on'
         end
     }
-    use {'adimit/prolog.vim', ft='prolog', setup = function()
-        vim.cmd [[autocmd BufNewFile,BufRead *.pl set filetype=prolog]]
-    end}
+    use {'adimit/prolog.vim', ft='prolog',
+        setup = function() vim.cmd'au BufNewFile,BufRead *.pl set filetype=prolog' end
+    }
     use {'ShinKage/idris2-nvim', ft='idris2',
     -- install lsp first:
     -- https://github.com/idris-community/idris2-lsp/issues/68
@@ -144,6 +146,9 @@ end)
 -- https://github.com/dhruvmanila/telescope-bookmarks.nvim
 -- https://github.com/tamago324/telescope-openbrowser.nvim
 -- https://github.com/Pocco81/HighStr.nvim
+-- nice theme https://github.com/adisen99/apprentice.nvim
+-- https://github.com/molleweide/LuaSnip-snippets.nvim
+-- https://github.com/arjunmahishi/run-code.nvim
 --
 -- Langs:
 -- use {'JuliaEditorSupport/julia-vim'}
