@@ -9,7 +9,7 @@ local fmt = require'luasnip.extras.fmt'.fmt
 
 ls.add_snippets('cpp', {
     ls.s(
-        "main",
+        'main',
         fmt(
         [[
         #include <iostream>
@@ -23,3 +23,22 @@ ls.add_snippets('cpp', {
         ]], ls.insert_node(1))
     )
 })
+-- ls.add_snippets('elm', {
+--     ls.s(
+--         'main',
+--         fmt(
+--         [[
+--         module Main exposing (main)
+--         import Browser
+--         import Html exposing (text)
+--
+--         main : Program () () ()
+--         main = Browser.element
+--             {{ init  = \_ -> ((), Cmd.none)
+--             , view = \_ -> text "test!"
+--             , update = \_ -> \_ -> ((), Cmd.none) 
+--             , subscriptions = \_ -> Sub.none
+--             }}
+--         ]])
+--     )
+-- })

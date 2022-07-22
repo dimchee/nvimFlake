@@ -105,6 +105,10 @@ return ok and packer.startup(function(use)
             require'notes'.setup{notes_dir = '~/Library/Neuron'}
         end
     }
+    -- use {
+    --     '~/Code/Nvim/prochrome'
+    -- }
+    use {'dimchee/prochrome', run = 'bash install.sh' }
 
     if BOOTSTRAP then
         require'packer'.sync()
@@ -149,6 +153,7 @@ end)
 -- nice theme https://github.com/adisen99/apprentice.nvim
 -- https://github.com/molleweide/LuaSnip-snippets.nvim
 -- https://github.com/arjunmahishi/run-code.nvim
+-- https://github.com/rcarriga/nvim-dap-ui
 --
 -- Langs:
 -- use {'JuliaEditorSupport/julia-vim'}

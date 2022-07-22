@@ -1,5 +1,5 @@
 local opts = { silent=true, unique=true, buffer=0 }
---vim.keymap.set('n', '<C-a>', '<cmd>VimtexCompile<cr>', opts)
+vim.keymap.set('n', '<C-a>', '<cmd>VimtexCompile<cr>', opts)
 vim.keymap.set('i', "\\v c", 'č', opts)
 vim.keymap.set('i', "\\' c", 'ć', opts)
 vim.keymap.set('i', "\\v s", 'š', opts)
