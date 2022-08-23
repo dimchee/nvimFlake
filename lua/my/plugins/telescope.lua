@@ -17,8 +17,8 @@ function M.setup()
     set_key('b' , tele_do.buffers)
     set_key('/' , tele_do.current_buffer_fuzzy_find)
     set_key('g' , tele_do.live_grep)
-    set_key('cf', function() tele_do.find_files{cwd="$VIM_HOME"} end)
-    set_key('cg', function() tele_do.live_grep{cwd="$VIM_HOME"} end)
+    set_key('cf', function() tele_do.find_files{cwd="$XDG_CONFIG_HOME/nvim"} end)
+    set_key('cg', function() tele_do.live_grep{cwd="$XDG_CONFIG_HOME/nvim"} end)
     --keymap('n', '<leader>ht', tele_do'help_tags()', k_opts)
     --keymap('n', '<leader>t' , tele_do'tags()', k_opts)
     --keymap('n', '<leader>sg', tele_do'grep_string()', k_opts)
@@ -27,3 +27,4 @@ function M.setup()
 end
 
 return M
+

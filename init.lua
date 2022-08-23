@@ -1,20 +1,9 @@
-P = function(v)
-  print(vim.inspect(v))
-  return v
-end
-require'my.options'
-require'my.mappings'
-require'my.deprecated'
+vim.g.mapleader = ','
+vim.keymap.set('n', '<space><space>', '<cmd>nohls<cr>', {silent = true})
 
-vim.tbl_foreach = table.foreach 
-
-vim.cmd[[command! PackerLoad lua require'my.plugins']]
-vim.cmd[[
-augroup filetypedetect
-au BufNewFile,BufRead *.lean	setf lean
-augroup END
-]]
-
+vim.cmd[[command! Packer lua package.loaded['my.plugins'] = nil; require'my.plugins']]
+vim.cmd[[command! PS lua package.loaded['my.plugins'] = nil; require'my.plugins'; require'packer'.sync()]]
+--vim.api.nvim
 
 function Markdownify()
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -27,8 +16,3 @@ function Markdownify()
     vim.cmd'startinsert'
 end
 vim.keymap.set('n', 'mp', Markdownify)
-
--- see :help vim.keymap and use it
-
--- https://github.com/luafun/luafun
--- https://github.com/lua-stdlib/functional

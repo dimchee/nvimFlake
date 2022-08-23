@@ -11,3 +11,8 @@ end
 
 vim.keymap.set('n', '<C-a>', '<cmd>lua RefreshOrStartElmEnv()<cr>', { silent=true })
 --vim.keymap.set('n', '<C-r>', '<cmd>lua require"prochrome".refresh()<cr>', { silent=true })
+
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.expandtab = true
