@@ -1,11 +1,1 @@
-local opts = { silent=true, unique=true, buffer=0 }
-vim.keymap.set('i', "\\v c", 'č', opts)
-vim.keymap.set('i', "\\' c", 'ć', opts)
-vim.keymap.set('i', "\\v s", 'š', opts)
-vim.keymap.set('i', "\\v z", 'ž', opts)
-vim.keymap.set('i', "\\dj ", 'đ', opts)
-vim.keymap.set('i', "\\v C", 'Č', opts)
-vim.keymap.set('i', "\\' C", 'Ć', opts)
-vim.keymap.set('i', "\\v S", 'Š', opts)
-vim.keymap.set('i', "\\v Z", 'Ž', opts)
-vim.keymap.set('i', "\\Dj ", 'Đ', opts)
+require'my.cyrillic'

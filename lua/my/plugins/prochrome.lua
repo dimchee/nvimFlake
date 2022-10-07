@@ -1,4 +1,5 @@
 return {
-	'dimchee/prochrome',
-	run = 'bash install.sh'
+	'dimchee/prochrome.nvim',
+	--'~/Code/Dev/prochrome'
+	run = 'bash install.sh',
 }

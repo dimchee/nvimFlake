@@ -27,5 +27,7 @@ packer().startup(function(use)
 	end
 	-- Until resolved https://github.com/neovim/neovim/issues/12103
 	use 'lambdalisue/suda.vim'
+	-- Until prolog gets proper support
+	use 'adimit/prolog.vim'
 end)
 -- https://github.com/j-hui/fidget.nvim

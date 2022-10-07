@@ -55,7 +55,14 @@ M.config = function()
 		on_attach = on_attach
 	}
 	lspconf.rust_analyzer.setup { on_attach = on_attach }
-	lspconf.elmls.setup { on_attach = on_attach }
+	lspconf.julials.setup       { on_attach = on_attach }
+	lspconf.hls.setup           { on_attach = on_attach }
+	lspconf.elmls.setup {
+    on_attach = on_attach,
+    root_dir = function(fname)
+			return require'lspconfig.util'.root_pattern'elm.json'(fname)
+		end
+  }
 end
 
 return M

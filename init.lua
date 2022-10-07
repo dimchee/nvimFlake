@@ -16,3 +16,7 @@ function Markdownify()
     vim.cmd'startinsert'
 end
 vim.keymap.set('n', 'mp', Markdownify)
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
+
+require'my.options'
