@@ -29,5 +29,6 @@ packer().startup(function(use)
 	use 'lambdalisue/suda.vim'
 	-- Until prolog gets proper support
 	use 'adimit/prolog.vim'
+	-- use_rocks 'luafun/luafun'
 end)
 -- https://github.com/j-hui/fidget.nvim

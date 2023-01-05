@@ -1,7 +1,11 @@
 local M = {
     'nvim-telescope/telescope.nvim',
     cmd = {'Telescope'},
-    requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}},
+    requires = {
+			{'nvim-lua/popup.nvim'},
+			{'nvim-lua/plenary.nvim'},
+			{'MrcJkb/telescope-manix'},
+		},
     module = 'telescope',
 }
 
@@ -19,11 +23,17 @@ function M.setup()
     set_key('g' , tele_do.live_grep)
     set_key('cf', function() tele_do.find_files{cwd="$XDG_CONFIG_HOME/nvim"} end)
     set_key('cg', function() tele_do.live_grep{cwd="$XDG_CONFIG_HOME/nvim"} end)
+		set_key('n', function()
+			require'telescope'
+			require'telescope-manix'.search()
+		end)
     --keymap('n', '<leader>ht', tele_do'help_tags()', k_opts)
     --keymap('n', '<leader>t' , tele_do'tags()', k_opts)
     --keymap('n', '<leader>sg', tele_do'grep_string()', k_opts)
     --keymap('n', '<leader>ct', tele_do'tags{ only_current_buffer = true }', k_opts)
     --keymap('n', '<leader>?' , tele_do'oldfiles()', k_opts)
+
+		require'telescope'.load_extension'manix'
 end
 
 return M

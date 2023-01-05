@@ -11,10 +11,14 @@ local M = {
 		-- {'onsails/lspkind-nvim', module='lspkind'},
 		-- {'hrsh7th/cmp-buffer'},
 		-- {'hrsh7th/cmp-emoji'},
-		-- {'kdheepak/cmp-latex-symbols'},
+		{'kdheepak/cmp-latex-symbols'},
 		-- https://github.com/petertriho/cmp-git
 	}
 }
+
+M.setup = function()
+	vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
+end
 
 M.config = function()
 	local cmp = require'cmp'
@@ -40,7 +44,7 @@ M.config = function()
 			-- { name = 'luasnip' },
 			--{ name = 'buffer' },
 			-- { name = 'emoji' },
-			-- { name = 'latex_symbols' },
+			{ name = 'latex_symbols' },
 			-- { name = 'neorg' },
 		}),
 		-- snippet = {
@@ -68,8 +72,7 @@ M.config = function()
 		-- 	}
 		-- },
 	})
-	local capabilities = vim.lsp.protocol.make_client_capabilities()
-	require'cmp_nvim_lsp'.update_capabilities(capabilities)
+	local capabilities = require'cmp_nvim_lsp'.default_capabilities()
 	capabilities.textDocument.codeLens = { dynamicRegistration = false }
 	--capabilities = vim.tbl_deep_extend("keep", capabilities, nvim_status.capabilities)
 	--capabilities.textDocument.codeLens = { dynamicRegistration = false }
