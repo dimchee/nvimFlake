@@ -8,10 +8,19 @@ local M = {
 
 M.servers = {
   texlab = true, ltex = { autostart = false },
-  lua_ls = true, -- sumneko-lua-language-server
+  lua_ls = {
+    settings = {
+      Lua = {
+        workspace = {
+          checkThirdParty = false,
+        },
+      },
+    },
+  },
   elmls = true,
   rust_analyzer = true,
   julials = true,
+  pyright = true,
   hls = {
     haskell = {
       plugin = {

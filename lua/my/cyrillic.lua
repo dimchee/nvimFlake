@@ -1,4 +1,4 @@
-local opts = { silent=true, unique=true, buffer=0 }
+local opts = { silent=true, unique=true }
 vim.keymap.set('i', "\\v c", 'č', opts)
 vim.keymap.set('i', "\\' c", 'ć', opts)
 vim.keymap.set('i', "\\v s", 'š', opts)

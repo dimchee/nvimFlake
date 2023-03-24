@@ -30,5 +30,6 @@ packer().startup(function(use)
 	-- Until prolog gets proper support
 	use 'adimit/prolog.vim'
 	-- use_rocks 'luafun/luafun'
+  use 'chrisbra/Replay'
 end)
 -- https://github.com/j-hui/fidget.nvim

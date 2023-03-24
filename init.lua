@@ -33,3 +33,4 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 })
 
 require'my.options'
+require'my.koka'

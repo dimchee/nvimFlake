@@ -6,7 +6,7 @@ local M = {
 		{'hrsh7th/cmp-nvim-lsp', module = 'cmp_nvim_lsp'},
 		{'hrsh7th/cmp-path'},
 		{'hrsh7th/cmp-nvim-lua'},
-		-- {'saadparwaiz1/cmp_luasnip'},
+		{'saadparwaiz1/cmp_luasnip'},
 		-- {'PaterJason/cmp-conjure'},
 		-- {'onsails/lspkind-nvim', module='lspkind'},
 		-- {'hrsh7th/cmp-buffer'},
@@ -47,11 +47,11 @@ M.config = function()
 			{ name = 'latex_symbols' },
 			-- { name = 'neorg' },
 		}),
-		-- snippet = {
-		-- 	expand = function(args)
-		-- 		require'luasnip'.lsp_expand(args.body)
-		-- 	end
-		-- },
+		snippet = {
+			expand = function(args)
+				require'luasnip'.lsp_expand(args.body)
+			end
+		},
 		experimental = {
 			native_menu = false,
 			ghost_text = true,
