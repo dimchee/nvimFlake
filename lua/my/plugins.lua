@@ -31,5 +31,6 @@ packer().startup(function(use)
 	use 'adimit/prolog.vim'
 	-- use_rocks 'luafun/luafun'
   use 'chrisbra/Replay'
+  use 'Nymphium/vim-koka'
 end)
 -- https://github.com/j-hui/fidget.nvim

@@ -20,7 +20,7 @@ M.servers = {
   elmls = true,
   rust_analyzer = true,
   julials = true,
-  pyright = true,
+  pyright = true, ruff_lsp = true,
   hls = {
     haskell = {
       plugin = {
