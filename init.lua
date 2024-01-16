@@ -25,19 +25,17 @@ require('lazy').setup {
       -- Only one of these is needed, not both.
       'nvim-telescope/telescope.nvim', -- optional
     },
-    config = true,
+    keys = {
+      { '<leader>gg', '<cmd>Neogit<cr>', desc = 'Open [G]it interface' },
+    },
+    opts = {
+      graph_style = 'unicode',
+    },
   },
   {
     'lewis6991/gitsigns.nvim',
     opts = {
       -- See `:help gitsigns.txt`
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
       on_attach = function(bufnr)
         local keymap = function(combo, func, desc) vim.keymap.set('n', combo, func, { buffer = bufnr, desc = desc }) end
         keymap('<leader>gp', require('gitsigns').prev_hunk, '[G]o to [P]revious Hunk')
@@ -91,6 +89,7 @@ require('lazy').setup {
           },
         },
       }
+      require('lspconfig').ruff_lsp.setup {}
     end,
   },
   {
@@ -187,6 +186,15 @@ require('lazy').setup {
     },
     main = 'ibl',
   },
+  {
+    'echasnovski/mini.indentscope',
+    version = '*',
+    opts = {
+      -- symbol = "▏",
+      symbol = '│',
+      options = { try_as_border = true },
+    },
+  },
   { 'numToStr/Comment.nvim', opts = {} },
   {
     'nvim-telescope/telescope.nvim',
@@ -224,81 +232,70 @@ require('lazy').setup {
     'nvim-treesitter/nvim-treesitter',
     dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
     build = ':TSUpdate',
-    opts = {
-      ensure_installed = {
-        'c',
-        'cpp',
-        'go',
-        'lua',
-        'python',
-        'rust',
-        'tsx',
-        'typescript',
-        'vimdoc',
-        'vim',
-        'elm',
-        'haskell',
-      },
-
-      -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-      auto_install = false,
-
-      highlight = { enable = true },
-      indent = { enable = true },
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = '<c-space>',
-          node_incremental = '<c-space>',
-          scope_incremental = '<c-s>',
-          node_decremental = '<M-space>',
-        },
-      },
-      textobjects = {
-        select = {
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'vimdoc', 'elm', 'haskell', 'nix' },
+        sync_install = false,
+        auto_install = false,
+        ignore_install = {},
+        modules = {},
+        highlight = { enable = true },
+        indent = { enable = true },
+        incremental_selection = {
           enable = true,
-          lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
           keymaps = {
-            -- You can use the capture groups defined in textobjects.scm
-            ['aa'] = '@parameter.outer',
-            ['ia'] = '@parameter.inner',
-            ['af'] = '@function.outer',
-            ['if'] = '@function.inner',
-            ['ac'] = '@class.outer',
-            ['ic'] = '@class.inner',
+            init_selection = '<c-space>',
+            node_incremental = '<c-space>',
+            scope_incremental = '<c-s>',
+            node_decremental = '<M-space>',
           },
         },
-        move = {
-          enable = true,
-          set_jumps = true, -- whether to set jumps in the jumplist
-          goto_next_start = {
-            [']m'] = '@function.outer',
-            [']]'] = '@class.outer',
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+            keymaps = {
+              -- You can use the capture groups defined in textobjects.scm
+              ['aa'] = '@parameter.outer',
+              ['ia'] = '@parameter.inner',
+              ['af'] = '@function.outer',
+              ['if'] = '@function.inner',
+              ['ac'] = '@class.outer',
+              ['ic'] = '@class.inner',
+            },
           },
-          goto_next_end = {
-            [']M'] = '@function.outer',
-            [']['] = '@class.outer',
+          move = {
+            enable = true,
+            set_jumps = true, -- whether to set jumps in the jumplist
+            goto_next_start = {
+              [']m'] = '@function.outer',
+              [']]'] = '@class.outer',
+            },
+            goto_next_end = {
+              [']M'] = '@function.outer',
+              [']['] = '@class.outer',
+            },
+            goto_previous_start = {
+              ['[m'] = '@function.outer',
+              ['[['] = '@class.outer',
+            },
+            goto_previous_end = {
+              ['[M'] = '@function.outer',
+              ['[]'] = '@class.outer',
+            },
           },
-          goto_previous_start = {
-            ['[m'] = '@function.outer',
-            ['[['] = '@class.outer',
-          },
-          goto_previous_end = {
-            ['[M'] = '@function.outer',
-            ['[]'] = '@class.outer',
+          swap = {
+            enable = true,
+            swap_next = {
+              ['<leader>a'] = '@parameter.inner',
+            },
+            swap_previous = {
+              ['<leader>A'] = '@parameter.inner',
+            },
           },
         },
-        swap = {
-          enable = true,
-          swap_next = {
-            ['<leader>a'] = '@parameter.inner',
-          },
-          swap_previous = {
-            ['<leader>A'] = '@parameter.inner',
-          },
-        },
-      },
-    },
+      }
+    end,
   },
   {
     'akinsho/toggleterm.nvim',
@@ -315,7 +312,6 @@ require('lazy').setup {
   {
     'stevearc/oil.nvim',
     opts = {},
-    -- Optional dependencies
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
   {

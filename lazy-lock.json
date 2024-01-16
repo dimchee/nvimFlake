@@ -11,6 +11,7 @@
   "indent-blankline.nvim": { "branch": "master", "commit": "12e92044d313c54c438bd786d11684c88f6f78cd" },
   "lazy.nvim": { "branch": "main", "commit": "96584866b9c5e998cbae300594d0ccfd0c464627" },
   "lualine.nvim": { "branch": "master", "commit": "566b7036f717f3d676362742630518a47f132fff" },
+  "mini.indentscope": { "branch": "main", "commit": "c8fdafa7bf603d758986a27eb546c55a5c73b1a3" },
   "neodev.nvim": { "branch": "main", "commit": "59a79458fbae5fff0e21fe2ed261770a70c9e171" },
   "neogit": { "branch": "master", "commit": "acd391ebb607cd6b8dd1c3e95c8fe8ebccfaf4fb" },
   "nord.nvim": { "branch": "main", "commit": "144374bdbf95221c32a8c053f2d23327006f67a5" },
