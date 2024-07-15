@@ -1,11 +1,14 @@
 -- ToDo
 -- - snipet for url pasting from clipboard
 -- - nvim keybinding cheatsheet, way to learn bindings (practice one random every day)
+-- - use https://github.com/artempyanykh/marksman
+-- - results of c compiler to quickfix list
 -- - in visual o ili O - s pocetka na kraj ili obrnuto
 -- - ^M - <C-v><C-m> da se unese (windows ending)
 -- - gq - split line to visual lines
 -- - learn about omni-completion
 -- - :help scroll-cursor
+-- - use vim.lsp.start
 -- Organisation of config
 -- - init.lua
 -- - lua/my/
@@ -591,7 +594,7 @@ vim.api.nvim_create_autocmd('FileType', {
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'markdown', 'tex' },
   callback = function()
-    local opts = { silent = true, unique = true }
+    local opts = { silent = true, unique = false }
     vim.keymap.set('i', '\\v c', 'č', opts)
     vim.keymap.set('i', "\\' c", 'ć', opts)
     vim.keymap.set('i', '\\v s', 'š', opts)
@@ -614,6 +617,23 @@ vim.api.nvim_create_autocmd('FileType', {
       vim.api.nvim_set_current_line(ln:sub(1, col + 1) .. '[](' .. vim.fn.getreg '+' .. ')' .. ln:sub(col + 2, #ln + 1))
       vim.api.nvim_win_set_cursor(0, { row, col + 2 })
       vim.cmd 'startinsert'
+    end, opts)
+  end,
+})
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'markdown' },
+  callback = function()
+    local opts = { silent = true, unique = true }
+    vim.keymap.set('v', 'gs', function()
+      local crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
+      local vrow, vcol = vim.fn.line('v'), vim.fn.col('v')
+      ccol = ccol + 1
+      if crow ~= vrow then
+        vim.notify("can't search multiple lines")
+      end
+      local ln = vim.api.nvim_get_current_line()
+      local visual = ln:sub(ccol < vcol and ccol or vcol, ccol < vcol and vcol or ccol)
+      vim.fn.jobstart({ "firefox", "--search", visual })
     end, opts)
   end,
 })
