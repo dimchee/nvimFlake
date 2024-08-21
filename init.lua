@@ -63,11 +63,11 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup {
   -- Until resolved https://github.com/neovim/neovim/issues/12103
   { 'lambdalisue/suda.vim' },
-  { dir = "~/Code/Dev/Notes",
-    opts = {
-      notes_dir = "~/Library/Neuron"
-    }
-  },
+  -- { dir = "~/Code/Dev/Notes",
+  --   opts = {
+  --     notes_dir = "~/Library/Neuron"
+  --   }
+  -- },
   -- https://github.com/folke/neoconf.nvim
   {
     'Julian/lean.nvim',
@@ -194,6 +194,14 @@ require('lazy').setup {
       require 'lspconfig'.texlab.setup {}
       require 'lspconfig'.gleam.setup {}
       require 'lspconfig'.elmls.setup {}
+      require 'lspconfig'.taplo.setup {}
+      require 'lspconfig'.nixd.setup {}
+      require 'lspconfig'.zls.setup {}
+      -- java script / web
+      require'lspconfig'.tsserver.setup {}
+      require 'lspconfig'.biome.setup {}
+      require 'lspconfig'.cssls.setup {} -- vscode-langservers-extracted
+      require 'lspconfig'.superhtml.setup {}
     end,
   },
   {
@@ -203,7 +211,7 @@ require('lazy').setup {
   },
   {
     'mrcjkb/rustaceanvim',
-    version = '^4', -- Recommended
+    version = '^5', -- Recommended
     lazy = false,   -- This plugin is already lazy
   },
   {
@@ -254,6 +262,13 @@ require('lazy').setup {
         },
       }
     end,
+  },
+  {
+    "L3MON4D3/LuaSnip",
+    dependencies = { "rafamadriz/friendly-snippets" },
+    init = function()
+      require("luasnip.loaders.from_vscode").lazy_load()
+    end
   },
   {
     'gbprod/nord.nvim',
@@ -497,6 +512,32 @@ require('lazy').setup {
       { 'nvim-lua/plenary.nvim' },
     }
   },
+  {
+    "Zeioth/compiler.nvim",
+    cmd = { "CompilerOpen", "CompilerToggleResults", "CompilerRedo" },
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      {
+        "stevearc/overseer.nvim",
+        opts = {
+          task_list = {
+            direction = "bottom",
+            min_height = 25,
+            max_height = 25,
+            default_detail = 1
+          },
+        },
+      },
+    },
+    opts = {},
+    init = function()
+      local opts = { noremap = true, silent = true }
+      local map = vim.api.nvim_set_keymap
+      map('n', '<F6>', "<cmd>CompilerOpen<cr>", opts)
+      map('n', '<S-F6>', "<cmd>CompilerRedo<cr>", opts)
+      map('n', '<S-F7>', "<cmd>CompilerToggleResults<cr>", opts)
+    end
+  },
   install = {
     colorscheme = { 'nord' },
   },
@@ -620,29 +661,26 @@ vim.api.nvim_create_autocmd('FileType', {
     end, opts)
   end,
 })
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'markdown' },
-  callback = function()
-    local opts = { silent = true, unique = true }
-    vim.keymap.set('v', 'gs', function()
-      local crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
-      local vrow, vcol = vim.fn.line('v'), vim.fn.col('v')
-      ccol = ccol + 1
-      if crow ~= vrow then
-        vim.notify("can't search multiple lines")
-      end
-      local ln = vim.api.nvim_get_current_line()
-      local visual = ln:sub(ccol < vcol and ccol or vcol, ccol < vcol and vcol or ccol)
-      vim.fn.jobstart({ "firefox", "--search", visual })
-    end, opts)
-  end,
-})
+-- vim.api.nvim_create_autocmd('FileType', {
+--   pattern = { 'markdown' },
+--   callback = function()
+--     local opts = { silent = true, unique = true }
+--     vim.keymap.set('v', 'gs', function()
+--       local crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
+--       local vrow, vcol = vim.fn.line('v'), vim.fn.col('v')
+--       ccol = ccol + 1
+--       if crow ~= vrow then
+--         vim.notify("can't search multiple lines")
+--       end
+--       local ln = vim.api.nvim_get_current_line()
+--       local visual = ln:sub(ccol < vcol and ccol or vcol, ccol < vcol and vcol or ccol)
+--       vim.fn.jobstart({ "firefox", "--search", visual })
+--     end, opts)
+--   end,
+-- })
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'html', 'css', 'js', 'ts' },
   callback = function()
-    vim.opt.tabstop = 2
-    vim.opt.softtabstop = 2
-    vim.opt.shiftwidth = 2
     vim.keymap.set('n', '<F5>', function()
       require('prochrome').open {
         is_app = true,
@@ -658,7 +696,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.keymap.set('n', '<F5>', function()
       require('prochrome').open {
         is_app = true,
-        on_start = { 'elm-live', 'src/Main.elm', '--', '--debug' },
+        on_start = { 'elm-live', 'src/Main.elm', '--', '--output', 'elm-stuff/main.js', '--debug' },
         url = 'http://localhost:8000',
       }
     end, { silent = true, desc = 'Start elm-live' })
