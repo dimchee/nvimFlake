@@ -63,7 +63,7 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup {
   -- Until resolved https://github.com/neovim/neovim/issues/12103
   { 'lambdalisue/suda.vim' },
-  -- { dir = "~/Code/Dev/Notes",
+  -- { dir = "~/Fleska/Code/Dev/Notes",
   --   opts = {
   --     notes_dir = "~/Library/Neuron"
   --   }
@@ -198,7 +198,7 @@ require('lazy').setup {
       require 'lspconfig'.nixd.setup {}
       require 'lspconfig'.zls.setup {}
       -- java script / web
-      require'lspconfig'.tsserver.setup {}
+      require 'lspconfig'.tsserver.setup {}
       require 'lspconfig'.biome.setup {}
       require 'lspconfig'.cssls.setup {} -- vscode-langservers-extracted
       require 'lspconfig'.superhtml.setup {}
