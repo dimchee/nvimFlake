@@ -29,7 +29,6 @@
 -- 'rafcamlet/nvim-luapad'
 -- 'L3MON4D3/LuaSnip'
 -- 'shaunsingh/nord.nvim'
--- '~/Code/Dev/Notes'
 -- 'rcarriga/nvim-notify'
 -- 'dimchee/prochrome.nvim'
 -- 'nvim-telescope/telescope.nvim'
@@ -70,7 +69,8 @@ require('lazy').setup {
     -- Until resolved https://github.com/neovim/neovim/issues/12103
     { 'lambdalisue/suda.vim' },
     -- { dir = '~/Desktop/zig.nvim', opts = {} },
-    { dir = "~/Git/notes.nvim",
+    { 'dimchee/notes.nvim',
+    -- dir = "~/Git/notes.nvim",
       opts = {
         notes_dir = "~/Library/Notes"
       }
