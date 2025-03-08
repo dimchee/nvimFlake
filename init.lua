@@ -30,7 +30,6 @@
 -- 'rafcamlet/nvim-luapad'
 -- 'L3MON4D3/LuaSnip'
 -- 'shaunsingh/nord.nvim'
--- '~/Code/Dev/Notes'
 -- 'rcarriga/nvim-notify'
 -- 'dimchee/prochrome.nvim'
 -- 'marcelofern/vale.nvim'
@@ -71,11 +70,13 @@ require('lazy').setup {
     { 'nvim-lua/plenary.nvim' },
     -- Until resolved https://github.com/neovim/neovim/issues/12103
     { 'lambdalisue/suda.vim' },
-    -- -- { dir = "~/Fleska/Code/Dev/Notes",
-    -- --   opts = {
-    -- --     notes_dir = "~/Library/Neuron"
-    -- --   }
-    -- -- },
+    -- { dir = '~/Desktop/zig.nvim', opts = {} },
+    { 'dimchee/notes.nvim',
+    -- dir = "~/Git/notes.nvim",
+      opts = {
+        notes_dir = "~/Library/Notes"
+      }
+    },
     -- -- https://github.com/folke/neoconf.nvim
     -- {
     --   'Julian/lean.nvim',
@@ -198,7 +199,7 @@ require('lazy').setup {
           },
         }
         require 'lspconfig'.ltex.setup { autostart = false }
-        require 'lspconfig'.ruff_lsp.setup {}
+        require 'lspconfig'.ruff.setup {}
         require 'lspconfig'.pyright.setup {}
         require 'lspconfig'.julials.setup {}
         require 'lspconfig'.texlab.setup {}
@@ -208,10 +209,11 @@ require('lazy').setup {
         require 'lspconfig'.nixd.setup {}
         require 'lspconfig'.zls.setup {}
         -- java script / web
-        require 'lspconfig'.tsserver.setup {}
+        require 'lspconfig'.ts_ls.setup {}
         require 'lspconfig'.biome.setup {}
         require 'lspconfig'.cssls.setup {} -- vscode-langservers-extracted
         require 'lspconfig'.superhtml.setup {}
+        require 'lspconfig'.vls.setup {}
       end,
     },
     {
