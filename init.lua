@@ -1,4 +1,5 @@
 -- ToDo
+-- use vim.iter
 -- - snipet for url pasting from clipboard
 -- - nvim keybinding cheatsheet, way to learn bindings (practice one random every day)
 -- - use https://github.com/artempyanykh/marksman
@@ -32,7 +33,6 @@
 -- '~/Code/Dev/Notes'
 -- 'rcarriga/nvim-notify'
 -- 'dimchee/prochrome.nvim'
--- 'nvim-telescope/telescope.nvim'
 -- 'marcelofern/vale.nvim'
 -- 'nvim-treesitter/nvim-treesitter'
 -- 'Julian/lean.nvim'
@@ -45,6 +45,8 @@
 -- 'pwntester/octo.nvim'
 -- 'dgagn/diagflow.nvim'
 -- 'onsails/diaglist.nvim'
+-- 'piersolenski/wtf.nvim'
+-- 'nvimdev/guard.nvim'
 --
 
 vim.g.mapleader = ' '
@@ -69,7 +71,6 @@ require('lazy').setup {
     { 'nvim-lua/plenary.nvim' },
     -- Until resolved https://github.com/neovim/neovim/issues/12103
     { 'lambdalisue/suda.vim' },
-    { dir = '~/Desktop/zig.nvim', opts = {} },
     -- -- { dir = "~/Fleska/Code/Dev/Notes",
     -- --   opts = {
     -- --     notes_dir = "~/Library/Neuron"
@@ -119,35 +120,35 @@ require('lazy').setup {
         end,
       },
     },
-    -- {
-    --   'lervag/vimtex',
-    --   lazy = false, -- for synctex to work
-    --   config = function()
-    --     vim.g.vimtex_compiler_method = 'tectonic'
-    --     vim.g.vimtex_compiler_tectonic = {
-    --       options = {
-    --         '--synctex',
-    --         '-Z shell-escape',
-    --         '--keep-logs',
-    --       },
-    --     }
-    --     vim.g.vimtex_quickfix_enabled = true
-    --     vim.g.vimtex_quickfix_method = 'pplatex'
-    --     vim.g.vimtex_quickfix_mode = 2
-    --     vim.g.vimtex_view_method = 'zathura'
-    --     vim.g.vimtex_view_automatic = true
-    --     vim.g.vimtex_mappings_disable = { ['n'] = { 'K' } }
-    --     vim.keymap.set('n', '<F5>', '<cmd>VimtexCompile<cr>', { silent = true, desc = 'Compile latex file' })
-    --     vim.g.vimtex_syntax_conceal_disable = true
-    --     -- vim.api.nvim_create_autocmd({ 'FileType' }, {
-    --     --   group = vim.api.nvim_create_augroup('lazyvim_vimtex_conceal', { clear = true }),
-    --     --   pattern = { 'bib', 'tex' },
-    --     --   callback = function()
-    --     --     vim.wo.conceallevel = 2
-    --     --   end,
-    --     -- })
-    --   end,
-    -- },
+    {
+      'lervag/vimtex',
+      lazy = false, -- for synctex to work
+      config = function()
+        vim.g.vimtex_compiler_method = 'tectonic'
+        vim.g.vimtex_compiler_tectonic = {
+          options = {
+            '--synctex',
+            '-Z shell-escape',
+            '--keep-logs',
+          },
+        }
+        vim.g.vimtex_quickfix_enabled = true
+        vim.g.vimtex_quickfix_method = 'pplatex'
+        vim.g.vimtex_quickfix_mode = 2
+        vim.g.vimtex_view_method = 'zathura'
+        vim.g.vimtex_view_automatic = true
+        vim.g.vimtex_mappings_disable = { ['n'] = { 'K' } }
+        -- vim.keymap.set('n', '<F5>', '<cmd>VimtexCompile<cr>', { silent = true, desc = 'Compile latex file' })
+        vim.g.vimtex_syntax_conceal_disable = true
+        -- vim.api.nvim_create_autocmd({ 'FileType' }, {
+        --   group = vim.api.nvim_create_augroup('lazyvim_vimtex_conceal', { clear = true }),
+        --   pattern = { 'bib', 'tex' },
+        --   callback = function()
+        --     vim.wo.conceallevel = 2
+        --   end,
+        -- })
+      end,
+    },
     {
       'neovim/nvim-lspconfig',
       dependencies = {
@@ -362,6 +363,17 @@ require('lazy').setup {
           desc = '[/] fuzzily search in current buffer',
         },
       },
+      opts = {
+        pickers = {
+          buffers = {
+            mappings = {
+              i = {
+                ["<c-d>"] = "delete_buffer",
+              }
+            }
+          }
+        }
+      },
       dependencies = { 'nvim-lua/plenary.nvim' },
     },
     -- {
@@ -369,79 +381,79 @@ require('lazy').setup {
     --   build = 'make',
     --   cond = function() return vim.fn.executable 'make' == 1 end,
     -- },
-    -- {
-    --   'nvim-treesitter/nvim-treesitter',
-    --   dependencies = {
-    --     'nvim-treesitter/nvim-treesitter-textobjects',
-    --     -- NOTE: additional parser
-    --     { 'nushell/tree-sitter-nu' },
-    --   },
-    --   build = ':TSUpdate',
-    --   config = function()
-    --     require('nvim-treesitter.configs').setup {
-    --       ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'vimdoc', 'elm', 'haskell', 'nix', 'zig' },
-    --       sync_install = false,
-    --       auto_install = false,
-    --       ignore_install = {},
-    --       modules = {},
-    --       highlight = { enable = true },
-    --       indent = { enable = true },
-    --       incremental_selection = {
-    --         enable = true,
-    --         keymaps = {
-    --           init_selection = '<c-space>',
-    --           node_incremental = '<c-space>',
-    --           scope_incremental = '<c-s>',
-    --           node_decremental = '<M-space>',
-    --         },
-    --       },
-    --       textobjects = {
-    --         select = {
-    --           enable = true,
-    --           lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-    --           keymaps = {
-    --             -- You can use the capture groups defined in textobjects.scm
-    --             ['aa'] = '@parameter.outer',
-    --             ['ia'] = '@parameter.inner',
-    --             ['af'] = '@function.outer',
-    --             ['if'] = '@function.inner',
-    --             ['ac'] = '@class.outer',
-    --             ['ic'] = '@class.inner',
-    --           },
-    --         },
-    --         move = {
-    --           enable = true,
-    --           set_jumps = true, -- whether to set jumps in the jumplist
-    --           goto_next_start = {
-    --             [']m'] = '@function.outer',
-    --             [']]'] = '@class.outer',
-    --           },
-    --           goto_next_end = {
-    --             [']M'] = '@function.outer',
-    --             [']['] = '@class.outer',
-    --           },
-    --           goto_previous_start = {
-    --             ['[m'] = '@function.outer',
-    --             ['[['] = '@class.outer',
-    --           },
-    --           goto_previous_end = {
-    --             ['[M'] = '@function.outer',
-    --             ['[]'] = '@class.outer',
-    --           },
-    --         },
-    --         swap = {
-    --           enable = true,
-    --           swap_next = {
-    --             ['<leader>a'] = '@parameter.inner',
-    --           },
-    --           swap_previous = {
-    --             ['<leader>A'] = '@parameter.inner',
-    --           },
-    --         },
-    --       },
-    --     }
-    --   end,
-    -- },
+    {
+      'nvim-treesitter/nvim-treesitter',
+      dependencies = {
+        'nvim-treesitter/nvim-treesitter-textobjects',
+        -- NOTE: additional parser
+        { 'nushell/tree-sitter-nu' },
+      },
+      build = ':TSUpdate',
+      config = function()
+        require('nvim-treesitter.configs').setup {
+          ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'vimdoc', 'elm', 'haskell', 'nix', 'zig', 'markdown' },
+          sync_install = false,
+          auto_install = false,
+          ignore_install = {},
+          modules = {},
+          highlight = { enable = true },
+          indent = { enable = true },
+          incremental_selection = {
+            enable = true,
+            keymaps = {
+              init_selection = '<c-space>',
+              node_incremental = '<c-space>',
+              scope_incremental = '<c-s>',
+              node_decremental = '<M-space>',
+            },
+          },
+          textobjects = {
+            select = {
+              enable = true,
+              lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+              keymaps = {
+                -- You can use the capture groups defined in textobjects.scm
+                ['aa'] = '@parameter.outer',
+                ['ia'] = '@parameter.inner',
+                ['af'] = '@function.outer',
+                ['if'] = '@function.inner',
+                ['ac'] = '@class.outer',
+                ['ic'] = '@class.inner',
+              },
+            },
+            move = {
+              enable = true,
+              set_jumps = true, -- whether to set jumps in the jumplist
+              goto_next_start = {
+                [']m'] = '@function.outer',
+                [']]'] = '@class.outer',
+              },
+              goto_next_end = {
+                [']M'] = '@function.outer',
+                [']['] = '@class.outer',
+              },
+              goto_previous_start = {
+                ['[m'] = '@function.outer',
+                ['[['] = '@class.outer',
+              },
+              goto_previous_end = {
+                ['[M'] = '@function.outer',
+                ['[]'] = '@class.outer',
+              },
+            },
+            swap = {
+              enable = true,
+              swap_next = {
+                ['<leader>a'] = '@parameter.inner',
+              },
+              swap_previous = {
+                ['<leader>A'] = '@parameter.inner',
+              },
+            },
+          },
+        }
+      end,
+    },
     {
       'akinsho/toggleterm.nvim',
       version = '*',
@@ -550,7 +562,8 @@ require('lazy').setup {
               name = "Build",
               components = {
                 "default",
-                { "on_output_parse",
+                {
+                  "on_output_parse",
                   parser = {
                     diagnostics = {
                       { "extract", "^([^%s].+):(%d+):(%d+): (%w)%w+: (.+)$", "filename", "lnum", "col", "type", "text" },
@@ -574,9 +587,9 @@ require('lazy').setup {
         end, {})
         local opts = { noremap = true, silent = true }
         local map = vim.api.nvim_set_keymap
-        map('n', '<F5>', "<cmd>OverseerRestartLast<cr>", opts)
-        map('n', '<F6>', "<cmd>OverseerToggle<cr>", opts)
-        map('n', '<F7>', "<cmd>OverseerRun<cr>", opts)
+        map('n', '<leader>cc', "<cmd>OverseerRestartLast<cr>", opts)
+        map('n', '<leader>ct', "<cmd>OverseerToggle<cr>", opts)
+        map('n', '<F5>', "<cmd>OverseerRun<cr>", opts)
       end
     }
   },
@@ -766,18 +779,18 @@ local function get_rust_project_name()
   local _, _, name = text:find '%[package%][^%[]*name%s*=%s*"(.-)"'
   return name
 end
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'rust',
-  callback = function()
-    vim.keymap.set('n', '<F5>', function()
-      require('prochrome').open {
-        is_app = true,
-        on_start = { 'cargo', 'doc' },
-        url = 'file://' .. Path:new('./target/doc/')
-            :joinpath(get_rust_project_name())
-            :joinpath('/index.html')
-            :expand(),
-      }
-    end, { silent = true, desc = 'Start documentation' })
-  end,
-})
+-- vim.api.nvim_create_autocmd('FileType', {
+--   pattern = 'rust',
+--   callback = function()
+--     vim.keymap.set('n', '<F5>', function()
+--       require('prochrome').open {
+--         is_app = true,
+--         on_start = { 'cargo', 'doc' },
+--         url = 'file://' .. Path:new('./target/doc/')
+--             :joinpath(get_rust_project_name())
+--             :joinpath('/index.html')
+--             :expand(),
+--       }
+--     end, { silent = true, desc = 'Start documentation' })
+--   end,
+-- })
