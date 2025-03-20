@@ -22,6 +22,10 @@
 -- https://jdhao.github.io/2022/08/21/you-do-not-need-a-plugin-for-this/
 --
 -- Plugins
+-- 'hat0uma/csvview.nvim'
+-- 'Goose97/timber.nvim'
+-- 'jake-stewart/multicursor.nvim'
+-- 'meznaric/key-analyzer.nvim'
 -- 'nvim-neotest/neotest'
 -- 'b0o/SchemaStore.nvim'
 -- 'lvimuser/lsp-inlayhints.nvim'
