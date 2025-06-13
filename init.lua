@@ -78,7 +78,7 @@ require('lazy').setup {
     { 'dimchee/notes.nvim',
     -- dir = "~/Git/notes.nvim",
       opts = {
-        notes_dir = "~/Git/Notes"
+        notes_dir = "~/.github/Notes"
       }
     },
     -- -- https://github.com/folke/neoconf.nvim
