@@ -22,6 +22,8 @@
 -- https://jdhao.github.io/2022/08/21/you-do-not-need-a-plugin-for-this/
 --
 -- Plugins
+-- 'rachartier/tiny-inline-diagnostic.nvim'
+-- 'Wansmer/treesj'
 -- 'hat0uma/csvview.nvim'
 -- 'Goose97/timber.nvim'
 -- 'jake-stewart/multicursor.nvim'
@@ -76,7 +78,7 @@ require('lazy').setup {
     { 'lambdalisue/suda.vim' },
     -- { dir = '~/Desktop/zig.nvim', opts = {} },
     { 'dimchee/notes.nvim',
-    -- dir = "~/Git/notes.nvim",
+      -- dir = "~/Git/notes.nvim",
       opts = {
         notes_dir = "~/.github/Notes"
       }
@@ -157,10 +159,9 @@ require('lazy').setup {
     {
       'neovim/nvim-lspconfig',
       dependencies = {
-        { 'j-hui/fidget.nvim',       opts = {} },
-        { 'folke/neodev.nvim',       opts = {} },
-        { 'rafcamlet/nvim-luapad',   opts = {} },
-        { 'zeioth/garbage-day.nvim', event = "VeryLazy", opts = {} },
+        { 'j-hui/fidget.nvim',     opts = {} },
+        { 'rafcamlet/nvim-luapad', opts = {} },
+        -- { 'zeioth/garbage-day.nvim', event = "VeryLazy", opts = {} },
       },
       init = function()
         vim.api.nvim_create_user_command('SpellCheck', 'LspStart ltex', {})
@@ -182,9 +183,9 @@ require('lazy').setup {
             -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
             -- vim.keymap.set( 'n', '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
             vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
-            vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-            vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
-            vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+            -- vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+            -- vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+            -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
             vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, opts)
           end,
         })
@@ -212,6 +213,7 @@ require('lazy').setup {
         require 'lspconfig'.taplo.setup {}
         require 'lspconfig'.nixd.setup {}
         require 'lspconfig'.zls.setup {}
+        require 'lspconfig'.clangd.setup {}
         -- java script / web
         require 'lspconfig'.ts_ls.setup {}
         require 'lspconfig'.biome.setup {}
@@ -219,6 +221,16 @@ require('lazy').setup {
         require 'lspconfig'.superhtml.setup {}
         require 'lspconfig'.vls.setup {}
       end,
+    },
+    {
+      "folke/lazydev.nvim",
+      ft = "lua",
+      opts = {
+        library = {
+          { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+          "nvim-dap-ui",
+        }
+      },
     },
     {
       'mrcjkb/haskell-tools.nvim',
@@ -287,13 +299,13 @@ require('lazy').setup {
       end
     },
     {
-      'gbprod/nord.nvim',
+      "dupeiran001/nord.nvim",
       lazy = false,
       priority = 1000,
-      config = function()
-        require('nord').setup {}
+      opts = {},
+      init = function()
         vim.cmd.colorscheme 'nord'
-      end,
+      end
     },
     {
       'nvim-lualine/lualine.nvim',
@@ -470,6 +482,11 @@ require('lazy').setup {
         open_mapping = '<c-/>',
         start_in_insert = true,
         close_on_exit = true,
+        highlights = {
+          Normal = { link = "Normal" },
+          NormalFloat = { link = "NormalFloat" },
+          FloatBorder = { link = "FloatBorder" },
+        },
       },
     },
     {
@@ -510,23 +527,23 @@ require('lazy').setup {
     --     require 'undotree'.setup()
     --   end
     -- },
-    -- {
-    --   'dimchee/prochrome.nvim',
-    --   build = 'bash install.sh',
-    --   config = function()
-    --     vim.api.nvim_create_user_command('Browse', function(opts)
-    --       require('prochrome').open { url = opts.fargs[1] }
-    --     end, { nargs = 1 })
-    --     vim.api.nvim_create_user_command('Hugo', function()
-    --       require('prochrome').open {
-    --         is_app = true,
-    --         on_start = { 'hugo', 'server', '-D', '--navigateToChanged' },
-    --         url = 'http://localhost:1313/mojaSrbija/',
-    --       }
-    --     end, { nargs = 0 })
-    --   end,
-    --   -- enabled = false,
-    -- },
+    {
+      'dimchee/prochrome.nvim',
+      build = 'bash install.sh',
+      config = function()
+        vim.api.nvim_create_user_command('Browse', function(opts)
+          require('prochrome').open { url = opts.fargs[1] }
+        end, { nargs = 1 })
+        vim.api.nvim_create_user_command('Hugo', function()
+          require('prochrome').open {
+            is_app = true,
+            on_start = { 'hugo', 'server', '-D', '--navigateToChanged' },
+            url = 'http://localhost:1313/mojaSrbija/',
+          }
+        end, { nargs = 0 })
+      end,
+      -- enabled = false,
+    },
     -- {
     --   'sudormrfbin/cheatsheet.nvim',
     --   config = function()
@@ -555,33 +572,78 @@ require('lazy').setup {
     --     map('n', '<F7>', "<cmd>CompilerOpen<cr>", opts)
     --   end
     -- },
+    { "mfussenegger/nvim-dap",
+      dependencies = {
+        {
+          "theHamsta/nvim-dap-virtual-text",
+          opts = {},
+        },
+      },
+      init = function()
+        require 'dap'.adapters.codelldb = {
+          type = "executable",
+          command = "codelldb",
+        }
+        require 'dap'.configurations.zig = {
+          {
+            name = 'Launch',
+            type = 'codelldb',
+            request = 'launch',
+            program = '${workspaceFolder}/zig-out/bin/${workspaceFolderBasename}',
+            cwd = '${workspaceFolder}',
+            stopOnEntry = false,
+            args = {},
+          }
+        }
+      end,
+      -- stylua: ignore
+      keys = {
+        { "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Breakpoint Condition" },
+        { "<leader>db", function() require("dap").toggle_breakpoint() end,                                    desc = "Toggle Breakpoint" },
+        { "<leader>dc", function() require("dap").continue() end,                                             desc = "Run/Continue" },
+        { "<leader>da", function() require("dap").continue({ before = get_args }) end,                        desc = "Run with Args" },
+        { "<leader>dC", function() require("dap").run_to_cursor() end,                                        desc = "Run to Cursor" },
+        { "<leader>dg", function() require("dap").goto_() end,                                                desc = "Go to Line (No Execute)" },
+        { "<leader>di", function() require("dap").step_into() end,                                            desc = "Step Into" },
+        { "<leader>dj", function() require("dap").down() end,                                                 desc = "Down" },
+        { "<leader>dk", function() require("dap").up() end,                                                   desc = "Up" },
+        { "<leader>dl", function() require("dap").run_last() end,                                             desc = "Run Last" },
+        { "<leader>do", function() require("dap").step_out() end,                                             desc = "Step Out" },
+        { "<leader>dO", function() require("dap").step_over() end,                                            desc = "Step Over" },
+        { "<leader>dP", function() require("dap").pause() end,                                                desc = "Pause" },
+        { "<leader>dr", function() require("dap").repl.toggle() end,                                          desc = "Toggle REPL" },
+        { "<leader>ds", function() require("dap").session() end,                                              desc = "Session" },
+        { "<leader>dt", function() require("dap").terminate() end,                                            desc = "Terminate" },
+        { "<leader>dw", function() require("dap.ui.widgets").hover() end,                                     desc = "Widgets" },
+      },
+    },
+    { "rcarriga/nvim-dap-ui",  dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
     {
       'stevearc/overseer.nvim',
       opts = {},
       init = function()
-        require 'overseer'.register_template {
-          name = "Build & run program",
-          builder = function()
-            return {
-              cmd = { 'zig' },
-              args = { 'build', 'run' },
-              name = "Build",
-              components = {
-                "default",
-                {
-                  "on_output_parse",
-                  parser = {
-                    diagnostics = {
-                      { "extract", "^([^%s].+):(%d+):(%d+): (%w)%w+: (.+)$", "filename", "lnum", "col", "type", "text" },
-                    }
-                  }
+        local d = { "extract", "^([^%s].+):(%d+):(%d+): (%w)%w+: (.+)$", "filename", "lnum", "col", "type", "text" }
+        local zigBuildTemplate = function(name, cmd)
+          require 'overseer'.register_template {
+            name = name,
+            builder = function()
+              return {
+                cmd = { 'zig' },
+                args = { 'build', cmd },
+                name = name,
+                components = {
+                  "default",
+                  { "on_output_parse",       parser = { diagnostics = { d } } },
+                  { "on_result_diagnostics", remove_on_restart = true },
                 },
-                { "on_result_diagnostics", remove_on_restart = true },
-              },
-            }
-          end,
-          condition = { filetype = { "zig" } },
-        }
+              }
+            end,
+            condition = { filetype = { "zig" } },
+          }
+        end
+        zigBuildTemplate('Build & run program', 'run')
+        zigBuildTemplate('Test program', 'test')
+        zigBuildTemplate('Build program', '')
         vim.api.nvim_create_user_command("OverseerRestartLast", function()
           local overseer = require("overseer")
           local tasks = overseer.list_tasks({ recent_first = true })
@@ -665,8 +727,8 @@ local diagnostic_goto = function(next, severity)
   severity = severity and vim.diagnostic.severity[severity] or nil
   return function() go { severity = severity } end
 end
-vim.keymap.set('n', ']d', diagnostic_goto(true), { desc = 'Go to next [D]iagnostic message' })
-vim.keymap.set('n', '[d', diagnostic_goto(false), { desc = 'Go to previous [D]iagnostic message' })
+-- vim.keymap.set('n', ']d', diagnostic_goto(true), { desc = 'Go to next [D]iagnostic message' })
+-- vim.keymap.set('n', '[d', diagnostic_goto(false), { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'Next Error' })
 vim.keymap.set('n', '[e', diagnostic_goto(false, 'ERROR'), { desc = 'Prev Error' })
 vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next Warning' })
