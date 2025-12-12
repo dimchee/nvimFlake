@@ -143,7 +143,7 @@ require('lazy').setup {
         vim.g.vimtex_quickfix_enabled = true
         vim.g.vimtex_quickfix_method = 'pplatex'
         vim.g.vimtex_quickfix_mode = 2
-        vim.g.vimtex_view_method = 'zathura'
+        -- vim.g.vimtex_view_method = 'zathura'
         vim.g.vimtex_view_automatic = true
         vim.g.vimtex_mappings_disable = { ['n'] = { 'K' } }
         -- vim.keymap.set('n', '<F5>', '<cmd>VimtexCompile<cr>', { silent = true, desc = 'Compile latex file' })
@@ -192,7 +192,7 @@ require('lazy').setup {
         })
       end,
       config = function()
-        require('lspconfig').lua_ls.setup {
+        vim.lsp.config('lua_ls', {
           settings = {
             Lua = {
               workspace = {
@@ -203,25 +203,45 @@ require('lazy').setup {
               },
             },
           },
-        }
-        require 'lspconfig'.ltex.setup { autostart = false }
-        require 'lspconfig'.ruff.setup {}
-        require 'lspconfig'.pyright.setup {}
-        require 'lspconfig'.julials.setup {}
-        require 'lspconfig'.texlab.setup {}
-        require 'lspconfig'.gleam.setup {}
-        require 'lspconfig'.elmls.setup {}
-        require 'lspconfig'.taplo.setup {}
-        require 'lspconfig'.nixd.setup {}
-        require 'lspconfig'.zls.setup {}
-        require 'lspconfig'.clangd.setup {}
+        })
+        vim.lsp.config('ltex', { autostart = false })
+        vim.lsp.enable('ruff')
+        vim.lsp.enable('pyright')
+        vim.lsp.enable('julials')
+        vim.lsp.enable('texlab')
+        vim.lsp.enable('gleam')
+        vim.lsp.enable('elmls')
+        vim.lsp.enable('taplo')
+        vim.lsp.enable('nixd')
+        vim.lsp.enable('zls')
+        vim.lsp.enable('clangd')
         -- java script / web
-        require 'lspconfig'.ts_ls.setup {}
-        require 'lspconfig'.biome.setup {}
-        require 'lspconfig'.cssls.setup {} -- vscode-langservers-extracted
-        require 'lspconfig'.superhtml.setup {}
-        require 'lspconfig'.vls.setup {}
+        vim.lsp.enable('ts_ls')
+        vim.lsp.enable('biome')
+        vim.lsp.enable('cssls')
+        vim.lsp.enable('superhtml')
+        vim.lsp.enable('vls')
+
+
+        vim.lsp.config('tinymist', {
+          settings = {
+            formatterMode = "typstyle",
+            exportPdf = "onType",
+            semanticTokens = "disable"
+          }
+        })
       end,
+    },
+    {
+      'chomosuke/typst-preview.nvim',
+      lazy = false, -- or ft = 'typst'
+      version = '1.*',
+      opts = {
+        invert_colors = 'auto',
+        dependencies_bin = {
+          ['tinymist'] = 'tinymist',
+        },
+      }, -- lazy.nvim will implicitly calls `setup {}`
     },
     {
       "folke/lazydev.nvim",
@@ -410,7 +430,7 @@ require('lazy').setup {
       build = ':TSUpdate',
       config = function()
         require('nvim-treesitter.configs').setup {
-          ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'vimdoc', 'elm', 'haskell', 'nix', 'zig', 'markdown' },
+          -- ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'vimdoc', 'elm', 'haskell', 'nix', 'zig', 'markdown' },
           sync_install = false,
           auto_install = false,
           ignore_install = {},
@@ -480,7 +500,7 @@ require('lazy').setup {
         setup = 20,
         direction = 'horizontal',
         persist_size = false,
-        open_mapping = '<c-/>',
+        open_mapping = '<c-\\>',
         start_in_insert = true,
         close_on_exit = true,
         highlights = {
