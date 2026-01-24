@@ -20,8 +20,10 @@
 --     - ...
 --   -
 -- https://jdhao.github.io/2022/08/21/you-do-not-need-a-plugin-for-this/
+-- https://github.com/EmmyLuaLs/emmylua-analyzer-rust
 --
 -- Plugins
+-- 'rachartier/tiny-glimmer.nvim'
 -- 'rachartier/tiny-inline-diagnostic.nvim'
 -- 'Wansmer/treesj'
 -- 'hat0uma/csvview.nvim'
@@ -53,7 +55,7 @@
 -- 'piersolenski/wtf.nvim'
 -- 'nvimdev/guard.nvim'
 -- 'folke/snacks.nvim'
---
+-- 'yetone/avante.nvim'
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
@@ -78,12 +80,42 @@ require('lazy').setup {
     -- Until resolved https://github.com/neovim/neovim/issues/12103
     { 'lambdalisue/suda.vim' },
     -- { dir = '~/Desktop/zig.nvim', opts = {} },
-    { 'dimchee/notes.nvim',
+    {
+      'dimchee/notes.nvim',
       -- dir = "~/Git/notes.nvim",
       opts = {
-        notes_dir = "~/.github/Notes"
-      }
+        notes_dir = '~/.github/Notes',
+      },
     },
+    {
+      'hat0uma/csvview.nvim',
+      opts = {
+        parser = { comments = { '#', '//' } },
+        keymaps = {
+          -- Text objects for selecting fields
+          textobject_field_inner = { 'if', mode = { 'o', 'x' } },
+          textobject_field_outer = { 'af', mode = { 'o', 'x' } },
+          -- Excel-like navigation:
+          -- Use <Tab> and <S-Tab> to move horizontally between fields.
+          -- Use <Enter> and <S-Enter> to move vertically between rows and place the cursor at the end of the field.
+          -- Note: In terminals, you may need to enable CSI-u mode to use <S-Tab> and <S-Enter>.
+          jump_next_field_end = { '<Tab>', mode = { 'n', 'v' } },
+          jump_prev_field_end = { '<S-Tab>', mode = { 'n', 'v' } },
+          jump_next_row = { '<Enter>', mode = { 'n', 'v' } },
+          jump_prev_row = { '<S-Enter>', mode = { 'n', 'v' } },
+        },
+      },
+      cmd = { 'CsvViewEnable', 'CsvViewDisable', 'CsvViewToggle' },
+    },
+    -- {
+    --   'robitx/gp.nvim',
+    --   config = function()
+    --     local conf = {
+    --       -- For customization, refer to Install > Configuration in the Documentation/Readme
+    --     }
+    --     require('gp').setup(conf)
+    --   end,
+    -- },
     -- -- https://github.com/folke/neoconf.nvim
     -- {
     --   'Julian/lean.nvim',
@@ -101,13 +133,13 @@ require('lazy').setup {
     --   },
     -- },
     {
-      "NeogitOrg/neogit",
+      'NeogitOrg/neogit',
       dependencies = {
-        "nvim-lua/plenary.nvim",  -- required
-        "sindrets/diffview.nvim", -- optional - Diff integration
+        'nvim-lua/plenary.nvim', -- required
+        'sindrets/diffview.nvim', -- optional - Diff integration
 
         -- Only one of these is needed, not both.
-        "nvim-telescope/telescope.nvim", -- optional
+        'nvim-telescope/telescope.nvim', -- optional
       },
       opts = {
         graph_style = 'unicode',
@@ -122,8 +154,8 @@ require('lazy').setup {
         -- See `:help gitsigns.txt`
         on_attach = function(bufnr)
           local keymap = function(combo, func, desc) vim.keymap.set('n', combo, func, { buffer = bufnr, desc = desc }) end
-          keymap('<leader>gp', require('gitsigns').prev_hunk, '[G]o to [P]revious Hunk')
-          keymap('<leader>gn', require('gitsigns').next_hunk, '[G]o to [N]ext Hunk')
+          keymap('<leader>gp', function() require('gitsigns').nav_hunk 'prev' end, '[G]o to [P]revious Hunk')
+          keymap('<leader>gn', function() require('gitsigns').nav_hunk 'next' end, '[G]o to [N]ext Hunk')
           keymap('<leader>ph', require('gitsigns').preview_hunk, '[P]review [H]unk')
         end,
       },
@@ -160,7 +192,7 @@ require('lazy').setup {
     {
       'neovim/nvim-lspconfig',
       dependencies = {
-        { 'j-hui/fidget.nvim',     opts = {} },
+        { 'j-hui/fidget.nvim', opts = {} },
         { 'rafcamlet/nvim-luapad', opts = {} },
         -- { 'zeioth/garbage-day.nvim', event = "VeryLazy", opts = {} },
       },
@@ -193,44 +225,76 @@ require('lazy').setup {
       end,
       config = function()
         vim.lsp.config('lua_ls', {
-          settings = {
-            Lua = {
+          on_init = function(client)
+            if client.workspace_folders then
+              local path = client.workspace_folders[1].name
+              if
+                path ~= vim.fn.stdpath 'config'
+                and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
+              then
+                return
+              end
+            end
+            client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+              runtime = {
+                version = 'LuaJIT',
+                path = {
+                  'lua/?.lua',
+                  'lua/?/init.lua',
+                },
+              },
               workspace = {
                 checkThirdParty = false,
+                library = { vim.env.VIMRUNTIME },
               },
-              completion = {
-                callSnippet = 'Replace',
-              },
-            },
+            })
+          end,
+          settings = {
+            Lua = {},
           },
         })
         vim.lsp.config('ltex', { autostart = false })
-        vim.lsp.enable('ruff')
-        vim.lsp.enable('pyright')
-        vim.lsp.enable('julials')
-        vim.lsp.enable('texlab')
-        vim.lsp.enable('gleam')
-        vim.lsp.enable('elmls')
-        vim.lsp.enable('taplo')
-        vim.lsp.enable('nixd')
-        vim.lsp.enable('zls')
-        vim.lsp.enable('clangd')
+        -- vim.lsp.config('clangd', { cmd = { 'clangd', '--query-driver=gcc' }})
+
+        vim.lsp.enable 'ltex'
+        vim.lsp.enable 'lua_ls'
+        vim.lsp.enable 'ruff'
+        vim.lsp.enable 'pyright'
+        vim.lsp.enable 'julials'
+        vim.lsp.enable 'texlab'
+        vim.lsp.enable 'gleam'
+        vim.lsp.enable 'elmls'
+        vim.lsp.enable 'taplo'
+        vim.lsp.enable 'nixd'
+        vim.lsp.enable 'zls'
+        vim.lsp.enable 'clangd'
+        vim.lsp.enable 'gopls'
         -- java script / web
-        vim.lsp.enable('ts_ls')
-        vim.lsp.enable('biome')
-        vim.lsp.enable('cssls')
-        vim.lsp.enable('superhtml')
-        vim.lsp.enable('vls')
+        vim.lsp.enable 'ts_ls'
+        vim.lsp.enable 'biome'
+        vim.lsp.enable 'cssls'
+        vim.lsp.enable 'superhtml'
+        -- vim.lsp.enable('vls')
+        vim.lsp.enable 'stylua'
 
-
-        vim.lsp.config('tinymist', {
-          settings = {
-            formatterMode = "typstyle",
-            exportPdf = "onType",
-            semanticTokens = "disable"
-          }
-        })
+        vim.lsp.enable 'tinymist'
+        -- vim.lsp.config('tinymist', {
+        --   settings = {
+        --     formatterMode = 'typstyle',
+        --     exportPdf = 'onType',
+        --     semanticTokens = 'disable',
+        --   },
+        -- })
       end,
+    },
+    {
+      'nvim-flutter/flutter-tools.nvim',
+      lazy = false,
+      dependencies = {
+        'nvim-lua/plenary.nvim',
+        'stevearc/dressing.nvim',
+      },
+      config = true,
     },
     {
       'chomosuke/typst-preview.nvim',
@@ -244,24 +308,24 @@ require('lazy').setup {
       }, -- lazy.nvim will implicitly calls `setup {}`
     },
     {
-      "folke/lazydev.nvim",
-      ft = "lua",
+      'folke/lazydev.nvim',
+      ft = 'lua',
       opts = {
         library = {
-          { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-          "nvim-dap-ui",
-        }
+          { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+          'nvim-dap-ui',
+        },
       },
     },
     {
       'mrcjkb/haskell-tools.nvim',
       version = '^3', -- Recommended
-      lazy = false,   -- This plugin is already lazy
+      lazy = false, -- This plugin is already lazy
     },
     {
       'mrcjkb/rustaceanvim',
       version = '^5', -- Recommended
-      lazy = false,   -- This plugin is already lazy
+      lazy = false, -- This plugin is already lazy
     },
     {
       'hrsh7th/nvim-cmp',
@@ -313,20 +377,16 @@ require('lazy').setup {
       end,
     },
     {
-      "L3MON4D3/LuaSnip",
-      dependencies = { "rafamadriz/friendly-snippets" },
-      init = function()
-        require("luasnip.loaders.from_vscode").lazy_load()
-      end
+      'L3MON4D3/LuaSnip',
+      dependencies = { 'rafamadriz/friendly-snippets' },
+      init = function() require('luasnip.loaders.from_vscode').lazy_load() end,
     },
     {
-      "dupeiran001/nord.nvim",
+      'dupeiran001/nord.nvim',
       lazy = false,
       priority = 1000,
       opts = {},
-      init = function()
-        vim.cmd.colorscheme 'nord'
-      end
+      init = function() vim.cmd.colorscheme 'nord' end,
     },
     {
       'nvim-lualine/lualine.nvim',
@@ -381,15 +441,51 @@ require('lazy').setup {
       keys = {
         -- See `:help telescope.builtin`
         -- { '<leader>?',       '<cmd>Telescope oldfiles     <cr>',                                                      desc = '[?] Find recently opened files' },
-        { '<leader><space>', '<cmd>Telescope buffers<cr>',                                                            desc = '[ ] Find existing buffers' },
-        { '<leader>gf',      '<cmd>Telescope git_files   <cr>',                                                       desc = 'Search [G]it [F]iles' },
-        { '<leader>sf',      '<cmd>Telescope find_files  <cr>',                                                       desc = '[S]earch [F]iles' },
-        { '<leader>sh',      '<cmd>Telescope help_tags   <cr>',                                                       desc = '[S]earch [H]elp' },
-        { '<leader>sw',      '<cmd>Telescope grep_string <cr>',                                                       desc = '[S]earch current [W]ord' },
-        { '<leader>sg',      '<cmd>Telescope live_grep   <cr>',                                                       desc = '[S]earch by [G]rep' },
-        { '<leader>sd',      '<cmd>Telescope diagnostics <cr>',                                                       desc = '[S]earch [D]iagnostics' },
-        { '<leader>cf',      function() require 'telescope.builtin'.find_files { cwd = "$XDG_CONFIG_HOME/nvim" } end, desc = '[C]onfig [F]iles' },
-        { '<leader>cg',      function() require 'telescope.builtin'.live_grep { cwd = "$XDG_CONFIG_HOME/nvim" } end,  desc = '[C]onfig [G]rep' },
+        {
+          '<leader><space>',
+          '<cmd>Telescope buffers<cr>',
+          desc = '[ ] Find existing buffers',
+        },
+        {
+          '<leader>gf',
+          '<cmd>Telescope git_files   <cr>',
+          desc = 'Search [G]it [F]iles',
+        },
+        {
+          '<leader>sf',
+          '<cmd>Telescope find_files  <cr>',
+          desc = '[S]earch [F]iles',
+        },
+        {
+          '<leader>sh',
+          '<cmd>Telescope help_tags   <cr>',
+          desc = '[S]earch [H]elp',
+        },
+        {
+          '<leader>sw',
+          '<cmd>Telescope grep_string <cr>',
+          desc = '[S]earch current [W]ord',
+        },
+        {
+          '<leader>sg',
+          '<cmd>Telescope live_grep   <cr>',
+          desc = '[S]earch by [G]rep',
+        },
+        {
+          '<leader>sd',
+          '<cmd>Telescope diagnostics <cr>',
+          desc = '[S]earch [D]iagnostics',
+        },
+        {
+          '<leader>cf',
+          function() require('telescope.builtin').find_files { cwd = '$XDG_CONFIG_HOME/nvim' } end,
+          desc = '[C]onfig [F]iles',
+        },
+        {
+          '<leader>cg',
+          function() require('telescope.builtin').live_grep { cwd = '$XDG_CONFIG_HOME/nvim' } end,
+          desc = '[C]onfig [G]rep',
+        },
         {
           '<leader>/',
           function()
@@ -407,11 +503,11 @@ require('lazy').setup {
           buffers = {
             mappings = {
               i = {
-                ["<c-d>"] = "delete_buffer",
-              }
-            }
-          }
-        }
+                ['<c-d>'] = 'delete_buffer',
+              },
+            },
+          },
+        },
       },
       dependencies = { 'nvim-lua/plenary.nvim' },
     },
@@ -500,13 +596,13 @@ require('lazy').setup {
         setup = 20,
         direction = 'horizontal',
         persist_size = false,
-        open_mapping = '<c-\\>',
+        open_mapping = '<c-\\><c-\\>',
         start_in_insert = true,
         close_on_exit = true,
         highlights = {
-          Normal = { link = "Normal" },
-          NormalFloat = { link = "NormalFloat" },
-          FloatBorder = { link = "FloatBorder" },
+          Normal = { link = 'Normal' },
+          NormalFloat = { link = 'NormalFloat' },
+          FloatBorder = { link = 'FloatBorder' },
         },
       },
     },
@@ -552,16 +648,22 @@ require('lazy').setup {
       'dimchee/prochrome.nvim',
       build = 'bash install.sh',
       config = function()
-        vim.api.nvim_create_user_command('Browse', function(opts)
-          require('prochrome').open { url = opts.fargs[1] }
-        end, { nargs = 1 })
-        vim.api.nvim_create_user_command('Hugo', function()
-          require('prochrome').open {
-            is_app = true,
-            on_start = { 'hugo', 'server', '-D', '--navigateToChanged' },
-            url = 'http://localhost:1313/mojaSrbija/',
-          }
-        end, { nargs = 0 })
+        vim.api.nvim_create_user_command(
+          'Browse',
+          function(opts) require('prochrome').open { url = opts.fargs[1] } end,
+          { nargs = 1 }
+        )
+        vim.api.nvim_create_user_command(
+          'Hugo',
+          function()
+            require('prochrome').open {
+              is_app = true,
+              on_start = { 'hugo', 'server', '-D', '--navigateToChanged' },
+              url = 'http://localhost:1313/mojaSrbija/',
+            }
+          end,
+          { nargs = 0 }
+        )
       end,
       -- enabled = false,
     },
@@ -593,19 +695,20 @@ require('lazy').setup {
     --     map('n', '<F7>', "<cmd>CompilerOpen<cr>", opts)
     --   end
     -- },
-    { "mfussenegger/nvim-dap",
+    {
+      'mfussenegger/nvim-dap',
       dependencies = {
         {
-          "theHamsta/nvim-dap-virtual-text",
+          'theHamsta/nvim-dap-virtual-text',
           opts = {},
         },
       },
       init = function()
-        require 'dap'.adapters.codelldb = {
-          type = "executable",
-          command = "codelldb",
+        require('dap').adapters.codelldb = {
+          type = 'executable',
+          command = 'codelldb',
         }
-        require 'dap'.configurations.zig = {
+        require('dap').configurations.zig = {
           {
             name = 'Launch',
             type = 'codelldb',
@@ -614,7 +717,7 @@ require('lazy').setup {
             cwd = '${workspaceFolder}',
             stopOnEntry = false,
             args = {},
-          }
+          },
         }
       end,
       -- stylua: ignore
@@ -638,49 +741,85 @@ require('lazy').setup {
         { "<leader>dw", function() require("dap.ui.widgets").hover() end,                                     desc = "Widgets" },
       },
     },
-    { "rcarriga/nvim-dap-ui",  dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
+    { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
     {
       'stevearc/overseer.nvim',
       opts = {},
       init = function()
-        local d = { "extract", "^([^%s].+):(%d+):(%d+): (%w)%w+: (.+)$", "filename", "lnum", "col", "type", "text" }
-        local zigBuildTemplate = function(name, cmd)
-          require 'overseer'.register_template {
-            name = name,
-            builder = function()
-              return {
-                cmd = { 'zig' },
-                args = { 'build', cmd },
-                name = name,
-                components = {
-                  "default",
-                  { "on_output_parse",       parser = { diagnostics = { d } } },
-                  { "on_result_diagnostics", remove_on_restart = true },
-                },
-              }
-            end,
-            condition = { filetype = { "zig" } },
-          }
+        local function get_zig_build(opts)
+          return vim.fs.find('build.zig', { upward = true, type = 'file', path = opts.dir })[1]
         end
-        zigBuildTemplate('Build & run program', 'run')
-        zigBuildTemplate('Test program', 'test')
-        zigBuildTemplate('Build program', '')
-        vim.api.nvim_create_user_command("OverseerRestartLast", function()
-          local overseer = require("overseer")
-          local tasks = overseer.list_tasks({ recent_first = true })
+        require('overseer').register_template {
+          name = 'zig build',
+          cache_key = get_zig_build,
+          generator = function(opts, callback)
+            if vim.fn.executable 'zig' == 0 then return 'Command "zig" not found' end
+            local build_zig = get_zig_build(opts)
+            if not build_zig then return 'No build.zig found' end
+            local cwd = vim.fs.dirname(build_zig)
+
+            local ret = {}
+            require('overseer').builtin.system(
+              { 'zig', 'build', '--help' },
+              { cwd = cwd, text = true, env = { ['LANG'] = 'C.UTF-8' } },
+              vim.schedule_wrap(function(out)
+                if out.code ~= 0 and out.code ~= 1 then
+                  return callback(out.stderr or out.stdout or "Error running 'zig build'")
+                end
+
+                local parsing = false
+                for line in vim.gsplit(out.stdout, '\n') do
+                  if line:find 'Steps:' == 1 then
+                    parsing = true
+                  elseif parsing and line == '' then
+                    break
+                  elseif parsing then
+                    table.insert(ret, {
+                      name = string.format('%s', line),
+                      builder = function()
+                        return {
+                          cmd = { 'zig', 'build', line:match '%S+' },
+                          cwd = cwd,
+                          components = {
+                            {
+                              'on_output_parse',
+                              errorformat = table.concat({
+                                '%E%f:%l:%c: error: %m',
+                                '%W%f:%l:%c: note: %m',
+                                '%Z%p^',
+                                '%-G%.%#',
+                              }, ','),
+                            },
+                            { 'on_result_diagnostics', remove_on_restart = true },
+                            'default',
+                          },
+                        }
+                      end,
+                    })
+                  end
+                end
+
+                callback(ret)
+              end)
+            )
+          end,
+        }
+        vim.api.nvim_create_user_command('OverseerRestartLast', function()
+          local overseer = require 'overseer'
+          local tasks = overseer.list_tasks { recent_first = true }
           if vim.tbl_isempty(tasks) then
-            vim.notify("No tasks found", vim.log.levels.WARN)
+            vim.notify('No tasks found', vim.log.levels.WARN)
           else
-            overseer.run_action(tasks[1], "restart")
+            overseer.run_action(tasks[1], 'restart')
           end
         end, {})
         local opts = { noremap = true, silent = true }
         local map = vim.api.nvim_set_keymap
-        map('n', '<leader>cc', "<cmd>OverseerRestartLast<cr>", opts)
-        map('n', '<leader>ct', "<cmd>OverseerToggle<cr>", opts)
-        map('n', '<F5>', "<cmd>OverseerRun<cr>", opts)
-      end
-    }
+        map('n', '<leader>cc', '<cmd>OverseerRestartLast<cr>', opts)
+        map('n', '<leader>ct', '<cmd>OverseerToggle<cr>', opts)
+        map('n', '<F5>', '<cmd>OverseerRun<cr>', opts)
+      end,
+    },
   },
   install = {
     colorscheme = { 'nord' },
@@ -703,43 +842,43 @@ require('lazy').setup {
 }
 
 -- Appearance
-vim.opt.number = true         -- Print line number
+vim.opt.number = true -- Print line number
 vim.opt.relativenumber = true -- Relative line numbers
 vim.opt.numberwidth = 4
-vim.opt.signcolumn = 'yes'    -- Always show the signcolumn, otherwise it would shift the text each time
-vim.opt.cursorline = true     -- Enable highlighting of the current line
-vim.opt.conceallevel = 3      -- Hide * markup for bold and italic
-vim.opt.showmode = false      -- Dont show mode since we have a statusline
-vim.opt.termguicolors = true  -- True color support
+vim.opt.signcolumn = 'yes' -- Always show the signcolumn, otherwise it would shift the text each time
+vim.opt.cursorline = true -- Enable highlighting of the current line
+vim.opt.conceallevel = 3 -- Hide * markup for bold and italic
+vim.opt.showmode = false -- Dont show mode since we have a statusline
+vim.opt.termguicolors = true -- True color support
 -- Indent
-vim.opt.shiftround = true     -- Round indent
+vim.opt.shiftround = true -- Round indent
 vim.opt.autoindent = true
-vim.opt.smartindent = true    -- Insert indents automatically-
+vim.opt.smartindent = true -- Insert indents automatically-
 -- Search
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
 vim.opt.ignorecase = true -- Ignore case
-vim.opt.smartcase = true  -- Don't ignore case with capitals
+vim.opt.smartcase = true -- Don't ignore case with capitals
 -- Timeouts
 vim.opt.timeoutlen = 300
 vim.opt.updatetime = 200 -- Save swap file and trigger CursorHold
 -- Backups and undos
 vim.opt.undolevels = 10000
-vim.opt.undofile = true     -- enable persistent undo
-vim.opt.backup = false      -- creates a backup file
+vim.opt.undofile = true -- enable persistent undo
+vim.opt.backup = false -- creates a backup file
 vim.opt.writebackup = false -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
-vim.opt.swapfile = false    -- creates a swapfile
+vim.opt.swapfile = false -- creates a swapfile
 -- Scroll
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
 vim.opt.errorbells = false
 -- Other
 vim.g.netrw_browser_viewer = 'firefox' -- Open link with gx
-vim.opt.clipboard = 'unnamedplus'      -- Sync with system clipboard
+vim.opt.clipboard = 'unnamedplus' -- Sync with system clipboard
 vim.opt.completeopt = 'menu,menuone,noselect'
 vim.opt.grepprg = 'rg --vimgrep'
 vim.opt.inccommand = 'nosplit' -- preview incremental substitute
-vim.opt.hidden = true          -- Do not save when switching buffers
+vim.opt.hidden = true -- Do not save when switching buffers
 vim.opt.spelllang = { 'en' }
 
 -- Diagnostic keymaps
@@ -756,17 +895,24 @@ vim.keymap.set('n', ']w', diagnostic_goto(true, 'WARN'), { desc = 'Next Warning'
 vim.keymap.set('n', '[w', diagnostic_goto(false, 'WARN'), { desc = 'Prev Warning' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+vim.keymap.set('t', '<C-w><C-w>', '<C-\\><C-n><C-w>w', { desc = 'Change Window' })
 
 -- Moving lines
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
 
 -- Default options that are always set: (https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua)
-vim.opt.tabstop = 4    -- Number of spaces tabs count for
+vim.opt.tabstop = 4 -- Number of spaces tabs count for
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4 -- Size of an indent
 vim.opt.expandtab = true
 vim.opt.linebreak = true
+vim.api.nvim_create_user_command('Llama', function(_)
+  local buf = vim.api.nvim_create_buf(true, false)
+  local win = vim.api.nvim_open_win(buf, false, { split = 'right' })
+  vim.api.nvim_set_current_win(win)
+  vim.fn.jobstart({ 'llama-cli', '-hf', 'ggml-org/gemma-3n-E2B-it-GGUF' }, { term = true })
+end, { desc = 'Open llama.cpp instance in split' })
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'lua', 'nix', 'html', 'css', 'js', 'ts' },
   callback = function()
@@ -777,7 +923,7 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'markdown', 'tex' },
+  pattern = { 'markdown', 'tex', 'csv' },
   callback = function()
     local opts = { silent = true, unique = false }
     vim.keymap.set('i', '\\v c', 'č', opts)
@@ -825,37 +971,52 @@ vim.api.nvim_create_autocmd('FileType', {
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'html', 'css', 'js', 'ts' },
   callback = function()
-    vim.keymap.set('n', '<F5>', function()
-      require('prochrome').open {
-        is_app = true,
-        on_start = { 'live-server', '--no-browser' },
-        url = 'http://localhost:8080',
-      }
-    end, { silent = true, desc = 'Start live-server' })
+    vim.keymap.set(
+      'n',
+      '<F5>',
+      function()
+        require('prochrome').open {
+          is_app = true,
+          on_start = { 'live-server', '--no-browser' },
+          url = 'http://localhost:8080',
+        }
+      end,
+      { silent = true, desc = 'Start live-server' }
+    )
   end,
 })
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'elm',
   callback = function()
-    vim.keymap.set('n', '<F5>', function()
-      require('prochrome').open {
-        is_app = true,
-        on_start = { 'elm-live', 'src/Main.elm', '--', '--output', 'elm-stuff/main.js', '--debug' },
-        url = 'http://localhost:8000',
-      }
-    end, { silent = true, desc = 'Start elm-live' })
+    vim.keymap.set(
+      'n',
+      '<F5>',
+      function()
+        require('prochrome').open {
+          is_app = true,
+          on_start = { 'elm-live', 'src/Main.elm', '--', '--output', 'elm-stuff/main.js', '--debug' },
+          url = 'http://localhost:8000',
+        }
+      end,
+      { silent = true, desc = 'Start elm-live' }
+    )
   end,
 })
 vim.api.nvim_create_autocmd('BufEnter', {
   pattern = 'Readme.md',
   callback = function()
-    vim.keymap.set('n', '<F5>', function()
-      require('prochrome').open {
-        is_app = true,
-        on_start = { 'gh', 'markdown-preview', '--disable-auto-open' },
-        url = 'http://localhost:3333',
-      }
-    end, { silent = true, desc = 'Start github markdown preview' })
+    vim.keymap.set(
+      'n',
+      '<F5>',
+      function()
+        require('prochrome').open {
+          is_app = true,
+          on_start = { 'gh', 'markdown-preview', '--disable-auto-open' },
+          url = 'http://localhost:3333',
+        }
+      end,
+      { silent = true, desc = 'Start github markdown preview' }
+    )
   end,
 })
 Path = require 'plenary.path'
