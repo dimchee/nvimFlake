@@ -84,7 +84,7 @@ require('lazy').setup {
       'dimchee/notes.nvim',
       -- dir = "~/Git/notes.nvim",
       opts = {
-        notes_dir = '~/.github/Notes',
+        notes_dir = '~/Notes',
       },
     },
     {
@@ -135,7 +135,7 @@ require('lazy').setup {
     {
       'NeogitOrg/neogit',
       dependencies = {
-        'nvim-lua/plenary.nvim', -- required
+        'nvim-lua/plenary.nvim',  -- required
         'sindrets/diffview.nvim', -- optional - Diff integration
 
         -- Only one of these is needed, not both.
@@ -192,7 +192,7 @@ require('lazy').setup {
     {
       'neovim/nvim-lspconfig',
       dependencies = {
-        { 'j-hui/fidget.nvim', opts = {} },
+        { 'j-hui/fidget.nvim',     opts = {} },
         { 'rafcamlet/nvim-luapad', opts = {} },
         -- { 'zeioth/garbage-day.nvim', event = "VeryLazy", opts = {} },
       },
@@ -229,8 +229,8 @@ require('lazy').setup {
             if client.workspace_folders then
               local path = client.workspace_folders[1].name
               if
-                path ~= vim.fn.stdpath 'config'
-                and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
+                  path ~= vim.fn.stdpath 'config'
+                  and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
               then
                 return
               end
@@ -320,12 +320,12 @@ require('lazy').setup {
     {
       'mrcjkb/haskell-tools.nvim',
       version = '^3', -- Recommended
-      lazy = false, -- This plugin is already lazy
+      lazy = false,   -- This plugin is already lazy
     },
     {
       'mrcjkb/rustaceanvim',
       version = '^5', -- Recommended
-      lazy = false, -- This plugin is already lazy
+      lazy = false,   -- This plugin is already lazy
     },
     {
       'hrsh7th/nvim-cmp',
@@ -713,8 +713,15 @@ require('lazy').setup {
             name = 'Launch',
             type = 'codelldb',
             request = 'launch',
-            program = '${workspaceFolder}/zig-out/bin/${workspaceFolderBasename}',
-            cwd = '${workspaceFolder}',
+            -- program = '${workspaceFolder}/zig-out/bin/${workspaceFolderBasename}',
+            program = function()
+              return vim.fn.input(
+                'Path to executable: ',
+                vim.fn.getcwd() .. '/zig-out/bin/',
+                'file'
+              )
+            end,
+            cwd = '${workspaceFolder}/zig-out/bin',
             stopOnEntry = false,
             args = {},
           },
@@ -741,7 +748,7 @@ require('lazy').setup {
         { "<leader>dw", function() require("dap.ui.widgets").hover() end,                                     desc = "Widgets" },
       },
     },
-    { 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
+    { 'rcarriga/nvim-dap-ui',  dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' }, opts = {} },
     {
       'stevearc/overseer.nvim',
       opts = {},
@@ -842,43 +849,43 @@ require('lazy').setup {
 }
 
 -- Appearance
-vim.opt.number = true -- Print line number
+vim.opt.number = true         -- Print line number
 vim.opt.relativenumber = true -- Relative line numbers
 vim.opt.numberwidth = 4
-vim.opt.signcolumn = 'yes' -- Always show the signcolumn, otherwise it would shift the text each time
-vim.opt.cursorline = true -- Enable highlighting of the current line
-vim.opt.conceallevel = 3 -- Hide * markup for bold and italic
-vim.opt.showmode = false -- Dont show mode since we have a statusline
-vim.opt.termguicolors = true -- True color support
+vim.opt.signcolumn = 'yes'    -- Always show the signcolumn, otherwise it would shift the text each time
+vim.opt.cursorline = true     -- Enable highlighting of the current line
+vim.opt.conceallevel = 3      -- Hide * markup for bold and italic
+vim.opt.showmode = false      -- Dont show mode since we have a statusline
+vim.opt.termguicolors = true  -- True color support
 -- Indent
-vim.opt.shiftround = true -- Round indent
+vim.opt.shiftround = true     -- Round indent
 vim.opt.autoindent = true
-vim.opt.smartindent = true -- Insert indents automatically-
+vim.opt.smartindent = true    -- Insert indents automatically-
 -- Search
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
 vim.opt.ignorecase = true -- Ignore case
-vim.opt.smartcase = true -- Don't ignore case with capitals
+vim.opt.smartcase = true  -- Don't ignore case with capitals
 -- Timeouts
 vim.opt.timeoutlen = 300
 vim.opt.updatetime = 200 -- Save swap file and trigger CursorHold
 -- Backups and undos
 vim.opt.undolevels = 10000
-vim.opt.undofile = true -- enable persistent undo
-vim.opt.backup = false -- creates a backup file
+vim.opt.undofile = true     -- enable persistent undo
+vim.opt.backup = false      -- creates a backup file
 vim.opt.writebackup = false -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
-vim.opt.swapfile = false -- creates a swapfile
+vim.opt.swapfile = false    -- creates a swapfile
 -- Scroll
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
 vim.opt.errorbells = false
 -- Other
 vim.g.netrw_browser_viewer = 'firefox' -- Open link with gx
-vim.opt.clipboard = 'unnamedplus' -- Sync with system clipboard
+vim.opt.clipboard = 'unnamedplus'      -- Sync with system clipboard
 vim.opt.completeopt = 'menu,menuone,noselect'
 vim.opt.grepprg = 'rg --vimgrep'
 vim.opt.inccommand = 'nosplit' -- preview incremental substitute
-vim.opt.hidden = true -- Do not save when switching buffers
+vim.opt.hidden = true          -- Do not save when switching buffers
 vim.opt.spelllang = { 'en' }
 
 -- Diagnostic keymaps
@@ -902,7 +909,7 @@ vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
 
 -- Default options that are always set: (https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua)
-vim.opt.tabstop = 4 -- Number of spaces tabs count for
+vim.opt.tabstop = 4    -- Number of spaces tabs count for
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4 -- Size of an indent
 vim.opt.expandtab = true
