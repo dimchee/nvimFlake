@@ -1,4 +1,7 @@
 -- ToDo
+-- Should make dependencies list! (add to flake or something)
+-- - tree-sitter
+-- - tree-sitter-grammars.*
 -- use vim.iter
 -- - snipet for url pasting from clipboard
 -- - nvim keybinding cheatsheet, way to learn bindings (practice one random every day)
@@ -84,7 +87,7 @@ require('lazy').setup {
       'dimchee/notes.nvim',
       -- dir = "~/Git/notes.nvim",
       opts = {
-        notes_dir = '~/Notes',
+        notes_dir = '~/XDG/Notes',
       },
     },
     {
@@ -167,9 +170,9 @@ require('lazy').setup {
         vim.g.vimtex_compiler_method = 'tectonic'
         vim.g.vimtex_compiler_tectonic = {
           options = {
-            '--synctex',
+            -- '--synctex',
             '-Z shell-escape',
-            '--keep-logs',
+            -- '--keep-logs',
           },
         }
         vim.g.vimtex_quickfix_enabled = true
@@ -499,6 +502,12 @@ require('lazy').setup {
         },
       },
       opts = {
+        -- solves strange bug with preview in gzz
+        defaults = {
+          preview = {
+            treesitter = false,
+          },
+        },
         pickers = {
           buffers = {
             mappings = {
@@ -523,71 +532,74 @@ require('lazy').setup {
         -- NOTE: additional parser
         { 'nushell/tree-sitter-nu' },
       },
+      lazy = false,
       build = ':TSUpdate',
-      config = function()
-        require('nvim-treesitter.configs').setup {
-          -- ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'vimdoc', 'elm', 'haskell', 'nix', 'zig', 'markdown' },
-          sync_install = false,
-          auto_install = false,
-          ignore_install = {},
-          modules = {},
-          highlight = { enable = true },
-          indent = { enable = true },
-          incremental_selection = {
-            enable = true,
-            keymaps = {
-              init_selection = '<c-space>',
-              node_incremental = '<c-space>',
-              scope_incremental = '<c-s>',
-              node_decremental = '<M-space>',
-            },
-          },
-          textobjects = {
-            select = {
-              enable = true,
-              lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-              keymaps = {
-                -- You can use the capture groups defined in textobjects.scm
-                ['aa'] = '@parameter.outer',
-                ['ia'] = '@parameter.inner',
-                ['af'] = '@function.outer',
-                ['if'] = '@function.inner',
-                ['ac'] = '@class.outer',
-                ['ic'] = '@class.inner',
-              },
-            },
-            move = {
-              enable = true,
-              set_jumps = true, -- whether to set jumps in the jumplist
-              goto_next_start = {
-                [']m'] = '@function.outer',
-                [']]'] = '@class.outer',
-              },
-              goto_next_end = {
-                [']M'] = '@function.outer',
-                [']['] = '@class.outer',
-              },
-              goto_previous_start = {
-                ['[m'] = '@function.outer',
-                ['[['] = '@class.outer',
-              },
-              goto_previous_end = {
-                ['[M'] = '@function.outer',
-                ['[]'] = '@class.outer',
-              },
-            },
-            swap = {
-              enable = true,
-              swap_next = {
-                ['<leader>a'] = '@parameter.inner',
-              },
-              swap_previous = {
-                ['<leader>A'] = '@parameter.inner',
-              },
-            },
-          },
-        }
-      end,
+      -- config = function()
+      --   require('nvim-treesitter.configs').setup {
+      --     ensure_installed = { 'go', 'lua', 'python', 'rust', 'vimdoc', 'elm', 'haskell', 'nix', 'zig', 'markdown', 'markdown_inline', 
+      --       'html', 'css', 'javascript' 
+      --     },
+      --     sync_install = false,
+      --     auto_install = false,
+      --     ignore_install = {},
+      --     modules = {},
+      --     highlight = { enable = true },
+      --     indent = { enable = true },
+      --     incremental_selection = {
+      --       enable = true,
+      --       keymaps = {
+      --         init_selection = '<c-space>',
+      --         node_incremental = '<c-space>',
+      --         scope_incremental = '<c-s>',
+      --         node_decremental = '<M-space>',
+      --       },
+      --     },
+      --     textobjects = {
+      --       select = {
+      --         enable = true,
+      --         lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+      --         keymaps = {
+      --           -- You can use the capture groups defined in textobjects.scm
+      --           ['aa'] = '@parameter.outer',
+      --           ['ia'] = '@parameter.inner',
+      --           ['af'] = '@function.outer',
+      --           ['if'] = '@function.inner',
+      --           ['ac'] = '@class.outer',
+      --           ['ic'] = '@class.inner',
+      --         },
+      --       },
+      --       move = {
+      --         enable = true,
+      --         set_jumps = true, -- whether to set jumps in the jumplist
+      --         goto_next_start = {
+      --           [']m'] = '@function.outer',
+      --           [']]'] = '@class.outer',
+      --         },
+      --         goto_next_end = {
+      --           [']M'] = '@function.outer',
+      --           [']['] = '@class.outer',
+      --         },
+      --         goto_previous_start = {
+      --           ['[m'] = '@function.outer',
+      --           ['[['] = '@class.outer',
+      --         },
+      --         goto_previous_end = {
+      --           ['[M'] = '@function.outer',
+      --           ['[]'] = '@class.outer',
+      --         },
+      --       },
+      --       swap = {
+      --         enable = true,
+      --         swap_next = {
+      --           ['<leader>a'] = '@parameter.inner',
+      --         },
+      --         swap_previous = {
+      --           ['<leader>A'] = '@parameter.inner',
+      --         },
+      --       },
+      --     },
+      --   }
+      -- end,
     },
     {
       'akinsho/toggleterm.nvim',
@@ -930,7 +942,7 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'markdown', 'tex', 'csv' },
+  pattern = { 'markdown', 'tex', 'csv', 'typst', 'html' },
   callback = function()
     local opts = { silent = true, unique = false }
     vim.keymap.set('i', '\\v c', 'č', opts)
