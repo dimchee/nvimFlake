@@ -3,6 +3,7 @@
 -- checkout https://nvim-mini.org/MiniMax/
 -- https://github.com/luafun/luafun
 -- https://github.com/lua-stdlib/functional
+-- indent line
 vim.pack.add {
   'https://github.com/nvim-mini/mini.icons',
   'https://github.com/nvim-tree/nvim-web-devicons',
@@ -174,8 +175,21 @@ vim.lsp.config('lua_ls', {
     },
   },
 })
-vim.lsp.enable { 'lua_ls', 'pyright', 'ruff', 'superhtml', 'zls' }
+vim.lsp.enable { 'lua_ls', 'pyright', 'ruff', 'superhtml', 'zls', 'emmet_language_server', 'nixd' }
 
+require('mini.completion').setup {
+  lsp_completion = {
+    -- Without this config autocompletion is set up through `:h 'completefunc'`.
+    -- Although not needed, setting up through `:h 'omnifunc'` is cleaner
+    -- (sets up only when needed) and makes it possible to use `<C-u>`.
+    source_func = 'omnifunc',
+    auto_setup = false,
+    process_items = function(items, base)
+      local o = { kind_priority = { Text = -1, Snippet = 99 } }
+      return require('mini.completion').default_process_items(items, base, o)
+    end,
+  },
+}
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
   once = true,
@@ -198,19 +212,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, opts)
 
     vim.bo[ev.buf].omnifunc = 'v:lua.MiniCompletion.completefunc_lsp'
-    require('mini.completion').setup {
-      lsp_completion = {
-        -- Without this config autocompletion is set up through `:h 'completefunc'`.
-        -- Although not needed, setting up through `:h 'omnifunc'` is cleaner
-        -- (sets up only when needed) and makes it possible to use `<C-u>`.
-        source_func = 'omnifunc',
-        auto_setup = false,
-        process_items = function(items, base)
-          local o = { kind_priority = { Text = -1, Snippet = 99 } }
-          return require('mini.completion').default_process_items(items, base, o)
-        end,
-      },
-    }
     vim.lsp.config('*', { capabilities = require('mini.completion').get_lsp_capabilities() })
   end,
 })
