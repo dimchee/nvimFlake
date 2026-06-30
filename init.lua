@@ -23,13 +23,45 @@ vim.pack.add {
   'https://github.com/akinsho/toggleterm.nvim',
   'https://github.com/hat0uma/csvview.nvim',
   'https://github.com/Owen-Dechow/videre.nvim',
+  'https://github.com/lervag/vimtex',
+  'https://github.com/MunifTanjim/nui.nvim',
+  'https://github.com/denialofsandwich/sudo.nvim',
+  'https://github.com/Julian/lean.nvim',
+  -- 'https://github.com/pablopunk/pi.nvim',
+  'https://github.com/carderne/pi-nvim',
 }
 
 require('videre').setup {
   round_units = false,
   simple_statusline = false,
 }
+require('sudo').setup()
+require('pi-nvim').setup()
 
+vim.g.lean_config = { mappings = true }
+vim.g.vimtex_compiler_method = 'tectonic'
+vim.g.vimtex_compiler_tectonic = {
+  options = {
+    -- '--synctex',
+    '-Z shell-escape',
+    -- '--keep-logs',
+  },
+}
+vim.g.vimtex_quickfix_enabled = true
+vim.g.vimtex_quickfix_method = 'pplatex'
+vim.g.vimtex_quickfix_mode = 2
+-- vim.g.vimtex_view_method = 'zathura'
+vim.g.vimtex_view_automatic = true
+vim.g.vimtex_mappings_disable = { ['n'] = { 'K' } }
+-- vim.keymap.set('n', '<F5>', '<cmd>VimtexCompile<cr>', { silent = true, desc = 'Compile latex file' })
+vim.g.vimtex_syntax_conceal_disable = true
+-- vim.api.nvim_create_autocmd({ 'FileType' }, {
+--   group = vim.api.nvim_create_augroup('lazyvim_vimtex_conceal', { clear = true }),
+--   pattern = { 'bib', 'tex' },
+--   callback = function()
+--     vim.wo.conceallevel = 2
+--   end,
+-- })
 require('toggleterm').setup {
   setup = 20,
   direction = 'horizontal',
@@ -135,7 +167,7 @@ require('conform').setup {
   },
 }
 
-require('notes').setup { notes_dir = '~/XDG/Notes' }
+require('notes').setup { notes_dir = '~/.github/Notes' }
 require('mini.icons').setup {}
 require('oil').setup {}
 vim.cmd.colorscheme 'miniwinter'
@@ -299,7 +331,7 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'markdown', 'tex', 'csv', 'typst', 'html' },
+  pattern = { 'markdown', 'tex', 'csv', 'typst', 'html', 'text' },
   callback = function()
     local opts = { silent = true, unique = false }
     vim.keymap.set('i', '\\v c', 'č', opts)
