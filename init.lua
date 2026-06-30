@@ -21,7 +21,15 @@ vim.pack.add {
   'https://github.com/stevearc/overseer.nvim',
   'https://github.com/nvim-lualine/lualine.nvim',
   'https://github.com/akinsho/toggleterm.nvim',
+  'https://github.com/hat0uma/csvview.nvim',
+  'https://github.com/Owen-Dechow/videre.nvim',
 }
+
+require('videre').setup {
+  round_units = false,
+  simple_statusline = false,
+}
+
 require('toggleterm').setup {
   setup = 20,
   direction = 'horizontal',
@@ -119,7 +127,7 @@ vim.api.nvim_create_autocmd('PackChanged', {
     end
   end,
 })
-require('nvim-treesitter').install { 'lua', 'python', 'rust', 'html', 'javascript', 'zig' }
+require('nvim-treesitter').install { 'lua', 'python', 'rust', 'html', 'javascript', 'zig', 'c' }
 
 require('conform').setup {
   formatters_by_ft = {
@@ -175,7 +183,7 @@ vim.lsp.config('lua_ls', {
     },
   },
 })
-vim.lsp.enable { 'lua_ls', 'pyright', 'ruff', 'superhtml', 'zls', 'emmet_language_server', 'nixd' }
+vim.lsp.enable { 'lua_ls', 'pyright', 'ruff', 'superhtml', 'zls', 'emmet_language_server', 'nixd', 'clangd' }
 
 require('mini.completion').setup {
   lsp_completion = {
