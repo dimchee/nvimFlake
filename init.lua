@@ -13,6 +13,7 @@ vim.pack.add {
   'https://github.com/nvim-lua/plenary.nvim',
   'https://github.com/nvim-telescope/telescope.nvim',
   'https://github.com/dimchee/notes.nvim',
+  'https://github.com/sindrets/diffview.nvim',
   'https://github.com/NeogitOrg/neogit.git',
   'https://github.com/lewis6991/gitsigns.nvim',
   'https://github.com/nvim-mini/mini.completion',
@@ -42,7 +43,7 @@ vim.g.lean_config = { mappings = true }
 vim.g.vimtex_compiler_method = 'tectonic'
 vim.g.vimtex_compiler_tectonic = {
   options = {
-    -- '--synctex',
+    '--synctex',
     '-Z shell-escape',
     -- '--keep-logs',
   },
@@ -50,7 +51,7 @@ vim.g.vimtex_compiler_tectonic = {
 vim.g.vimtex_quickfix_enabled = true
 vim.g.vimtex_quickfix_method = 'pplatex'
 vim.g.vimtex_quickfix_mode = 2
--- vim.g.vimtex_view_method = 'zathura'
+vim.g.vimtex_view_method = 'zathura'
 vim.g.vimtex_view_automatic = true
 vim.g.vimtex_mappings_disable = { ['n'] = { 'K' } }
 -- vim.keymap.set('n', '<F5>', '<cmd>VimtexCompile<cr>', { silent = true, desc = 'Compile latex file' })
@@ -82,8 +83,44 @@ require('lualine').setup {
   },
   sections = { lualine_c = { 'overseer', 'filename' } },
 }
+require('neogit').setup {
+  integrations = {
+    diffview = true,
+  },
+}
 require('overseer').setup {}
 local function get_zig_build(opts) return vim.fs.find('build.zig', { upward = true, type = 'file', path = opts.dir })[1] end
+require('overseer').register_template {
+  name = 'Zig run Watch',
+  builder = function()
+    return {
+      cmd = { 'zig' },
+      args = {
+        'build',
+        'run',
+        '-fincremental',
+        '--watch',
+      },
+      components = {
+        {
+          'on_output_parse',
+          errorformat = table.concat({
+            '%E%f:%l:%c: error: %m',
+            '%W%f:%l:%c: note: %m',
+            '%Z%p^',
+            '%-G%.%#',
+          }, ','),
+        },
+        { 'on_result_diagnostics', remove_on_restart = true },
+        'default',
+      },
+    }
+  end,
+  condition = {
+    callback = function() return vim.fn.filereadable 'build.zig' == 1 end,
+  },
+}
+
 require('overseer').register_template {
   name = 'zig build',
   cache_key = get_zig_build,
@@ -167,7 +204,7 @@ require('conform').setup {
   },
 }
 
-require('notes').setup { notes_dir = '~/.github/Notes' }
+require('notes').setup { notes_dir = '~/XDG/Notes' }
 require('mini.icons').setup {}
 require('oil').setup {}
 vim.cmd.colorscheme 'miniwinter'
@@ -192,6 +229,7 @@ require('gitsigns').setup {
 }
 
 vim.g.mapleader = ' '
+vim.g.maplocalleader = ','
 vim.keymap.set('n', '<leader>gg', '<cmd>Neogit<cr>', {})
 vim.keymap.set('n', '<leader>sg', '<cmd>Telescope live_grep<cr>', { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader><leader>', '<cmd>Telescope buffers<cr>', { desc = '[ ] Find existing buffers' })
@@ -215,7 +253,7 @@ vim.lsp.config('lua_ls', {
     },
   },
 })
-vim.lsp.enable { 'lua_ls', 'pyright', 'ruff', 'superhtml', 'zls', 'emmet_language_server', 'nixd', 'clangd' }
+vim.lsp.enable { 'lua_ls', 'pyright', 'ruff', 'superhtml', 'zls', 'emmet_language_server', 'nixd', 'clangd', 'texlab' }
 
 require('mini.completion').setup {
   lsp_completion = {
