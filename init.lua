@@ -90,6 +90,45 @@ require('neogit').setup {
 }
 require('overseer').setup {}
 local function get_zig_build(opts) return vim.fs.find('build.zig', { upward = true, type = 'file', path = opts.dir })[1] end
+
+local function zig_parser()
+  local diagnostics = {}
+  local clear_on_next = false
+  return {
+    result_version = 0,
+    parse = function(self, line)
+      if line:match '^Build Summary:' then
+        if line:find 'failed' then
+          clear_on_next = true
+        elseif #diagnostics > 0 then
+          diagnostics = {}
+          self.result_version = self.result_version + 1
+        end
+        return
+      end
+      local file, lnum, col, kind, msg = line:match '^(%S+):(%d+):(%d+): (%a+): (.*)$'
+      if not file then return end
+      if clear_on_next then
+        diagnostics = {}
+        clear_on_next = false
+      end
+      diagnostics[#diagnostics + 1] = {
+        filename = file,
+        lnum = tonumber(lnum),
+        col = tonumber(col),
+        text = msg,
+        type = kind == 'error' and 'E' or 'W',
+      }
+      self.result_version = self.result_version + 1
+    end,
+    get_result = function() return { diagnostics = diagnostics } end,
+    reset = function()
+      diagnostics = {}
+      clear_on_next = false
+    end,
+  }
+end
+
 require('overseer').register_template {
   name = 'Zig run Watch',
   builder = function()
@@ -102,15 +141,7 @@ require('overseer').register_template {
         '--watch',
       },
       components = {
-        {
-          'on_output_parse',
-          errorformat = table.concat({
-            '%E%f:%l:%c: error: %m',
-            '%W%f:%l:%c: note: %m',
-            '%Z%p^',
-            '%-G%.%#',
-          }, ','),
-        },
+        { 'on_output_parse', parser = zig_parser() },
         { 'on_result_diagnostics', remove_on_restart = true },
         'default',
       },
@@ -158,7 +189,7 @@ require('overseer').register_template {
                       errorformat = table.concat({
                         '%E%f:%l:%c: error: %m',
                         '%W%f:%l:%c: note: %m',
-                        '%Z%p^',
+                        '%Z%*[ ~^.-]',
                         '%-G%.%#',
                       }, ','),
                     },
